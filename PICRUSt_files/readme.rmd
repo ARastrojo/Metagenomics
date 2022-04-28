@@ -1,0 +1,3 @@
+- 16S_13_5_precalculated.tab.gz
+Precalculated 16S copy number obtained from:
+http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.1/13_5/
