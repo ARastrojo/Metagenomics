@@ -1,3 +1,10 @@
-- 16S_13_5_precalculated.tab.gz (MD5: 2fb637cbf5b0898bbca15a94e9a08f1f)
-Precalculated 16S copy number obtained from:
+
+Precalculated files downloaded from:
 http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.1/13_5/
+
+| File | MD5 |
+| --- | --- |
+| 16S_13_5_precalculated.tab.gz | 2fb637cbf5b0898bbca15a94e9a08f1f |
+| cog_13_5_precalculated.tab.gz | 52fc0c2a627903cf3e270ccd5e5f8ed7 |
+| ko_13_5_precalculated.tab.gz | 8220d5b3f48af4a86c1542973a365500 |
+| rfam_13_5_precalculated.tab.gz | f2c9fed80369243806f8aa970b6e0182 |
