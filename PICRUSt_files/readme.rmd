@@ -10,16 +10,6 @@ http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.
 | rfam_13_5_precalculated.tab.gz | f2c9fed80369243806f8aa970b6e0182 |
 
 
-76  l 
-  477  l /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/
-  478  mkdir /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-  480  mv 16S_13_5_precalculated.tab.gz /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-  481  l /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-  491  cp 16S_13_5_precalculated.tab.gz /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-  492  l /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-  498  wget http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.1/13_5/16S_13_5_precalculated.tab.gz
-
-
 ```bash
 mkdir /home/bgm/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
 wget https://dauam-my.sharepoint.com/:u:/g/personal/alberto_rastrojo_uam_es/EU7uEZfP4rhAhgqcMGoBIukBM7lMgWcaXiBvxS2q8xYVQA?download=1 -O 16S_13_5_precalculated.tab.gz
