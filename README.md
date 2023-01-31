@@ -16,6 +16,8 @@ In temrinal:
 cd /media/${USER}/VBox_GAs_7.0.6  
 sudo ./VBoxLinuxAdditions.run  
 ```
+Reboot system.
+
 
 #### Install Miniconda
 
