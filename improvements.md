@@ -1,17 +1,33 @@
+## Detailed Syllabus
+UNIT 1. Introduction to metagenomics. Definitions. The great plate count anomaly. History. Microbial communities: the big picture. Shotgun vs. marker gene Next Generation Sequencing: Operational Taxonomic Units (OTUs) and contigs. The tree of life. The Human Microbiome Project. Pipelines. Major issues and bias in metagenomics. Functional annotation of contigs. Repositories and databases.
+UNIT 2. Deep sequencing of maker genes. Beyond 16S. Choice of targeted variable regions in marker genes. DNA extraction and PCR amplification. Barcodes and parallel sequencing. Sequence pre-processing: quality filtering, chimeric reads, and more. Alignment and clustering into OTUs. Phylogenetic trees. Taxonomic binning. Who is there? Rarefaction curves and alpha diversity. Beta diversity.
+UNIT 3. Shotgun NGS sequencing and de novo assembly. NGS strategies and coverage. Overlap Layout Consensus and De Brujin Graph assembly. Viral and bacterial full-length genome assembly. Contig scaffolding with paired-end reads. Assembly quality parameters.
+UNIT 4. Metagenomic taxonomic composition. Binning. Based on sequence composition (kmer and %CGs) or based on sequence (blast, Diamond, BLAT,...).
+Best hit or Lowest Common Ancestor.
+UNIT 5. Functional composition in a microbial environment. What are they doing?. Categories. Databases: COG, SEED, PFAM, KEGG, and more. Annotation systems. Metabolic pathways.
+UNIT 6. Metagenomes comparison. Exploratory methods: heat maps, dendograms, and more. Computing distances. Ordenation in reduced space: PCA, PCoA, NMDS, and more. Are two groups of metagenomes statistically different in their composition?. ANOSIM, PERMANOVA, PERMADIST, SIMPER.
+UNIT 7. Functional composition inference from marker genes. PICRUSt.
+
+
 ### General
-- Upload all datasets to oneDrive and create a link for download
+Upload all datasets to oneDrive and create a link for download
+
+Unit 5 --> Functional composition explanation and metagenome comparison merge. Explain functional composition analysis with Humann, and then use STAMP for comparison (We cannot run humann in the computional resources we have)
+
+Unit 6 --> pycrust + STAMP again
+
 
 ### Unit 3
-- Move quast cgi2html code upwards 
+Move quast cgi2html code upwards 
 
 ### Unit 4 
-- Use Kraken2 instead of MEGAN (very high RAM consumption)
+Use Kraken2 instead of MEGAN (very high RAM consumption)
 
 ### Unit 5-6 
 
 Merge both units
 toy_example.fastq??? Ask Dani
-Update to humann3 --> fail to install
+Update to humann3 --> fail to install on my mac
 
 ### Unit 7 
 
