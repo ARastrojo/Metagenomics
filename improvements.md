@@ -63,12 +63,12 @@ pip install humann --no-binary :all:
 
 conda install metaphlan -c bioconda --> FAIL
 
-Output in format: Requested package -> Available versionsThe following specifications were found to be incompatible with your system:
+# Output in format: Requested package -> Available versionsThe following specifications were found to be incompatible with your system:
 
-  - feature:/osx-64::__osx==10.16=0
-  - metaphlan -> matplotlib-base -> __osx[version='>=10.11']
+#   - feature:/osx-64::__osx==10.16=0
+#   - metaphlan -> matplotlib-base -> __osx[version='>=10.11']
 
-Your installed version is: 10.16
+# Your installed version is: 10.16
 
 
 ```
