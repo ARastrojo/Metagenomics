@@ -97,3 +97,20 @@ tar -xzf stamp.tar.gz -C /home/${USER}/miniconda3/envs/stamp
 
 NOTA: los entornos portados así sólo se pueden volver a montar en el mismo tipo de sistema operativo. Si se crearon en linux, no van a funcionar en mac o windows.  
 
+
+#### Install VirtualBox Guest Additions
+
+Guest Additions allow virtual machine window to fit your screen, share clipboard, etc.
+
+sudo apt-get update  
+sudo apt-get install gcc  
+sudo apt-get install make  
+
+Go to menu bar, click on Devices -> Insert Guest additions CD  
+In temrinal:  
+```
+cd /media/${USER}/VBox_GAs_7.0.6  
+sudo ./VBoxLinuxAdditions.run  
+```
+Reboot system.
+
