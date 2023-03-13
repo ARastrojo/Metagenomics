@@ -88,3 +88,19 @@ humann -i sample_reads.fastq -o sample_results
 ***
 
 
+#### Simulate reads
+
+https://github.com/HadrienG/InSilicoSeq
+
+curl -O -J -L https://osf.io/thser/download  # download the example data
+iss generate --genomes SRS121011.fasta --model miseq --output miseq_reads
+
+
+
+
+
+
+
+
+
+
