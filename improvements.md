@@ -90,11 +90,21 @@ humann -i sample_reads.fastq -o sample_results
 
 #### Simulate reads
 
-https://github.com/HadrienG/InSilicoSeq
+[Github page](https://github.com/HadrienG/InSilicoSeq)
+[Complete manual](https://insilicoseq.readthedocs.io/en/latest/)
 
-curl -O -J -L https://osf.io/thser/download  # download the example data
-iss generate --genomes SRS121011.fasta --model miseq --output miseq_reads
 
+```bash
+conda create -n tmp python
+conda activate tmp
+pip install InSilicoSeq
+conda deactivate
+```
+
+
+iss generate --genomes F113.txt --model hiseq --output hiseq_reads
+
+iss generate -k viruses -U 10 --model miseq --output miseq_viruses
 
 
 
