@@ -114,8 +114,10 @@ iss generate -k viruses -U 10 --model miseq --output miseq_viruses
 
 #### Kraken2
 
-[Github page]()
-[Complete manual]()
+[Kraken2 web](https://ccb.jhu.edu/software/kraken2/)
+[Github page](https://github.com/DerrickWood/kraken2)
+[Complete manual](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown)
+[PreBuilt Databases](https://benlangmead.github.io/aws-indexes/k2)
 
 
 ```bash
@@ -125,18 +127,35 @@ conda install -c bioconda
 kraken2conda deactivate
 ```
 
+```bash
+# Download viral database
+wget https://genome-idx.s3.amazonaws.com/kraken/k2_viral_20221209.tar.gz
+
+
+kraken2 -db k2_viral_20221209 --paired miseq_viruses_R1.fastq miseq_viruses_R2.fastq --report kraken2_report.txt > kraken2.txt 
+```
+
+> Loading database information... done.  
+> 500001 sequences (301.00 Mbp) processed in 48.274s (621.5 Kseq/m, 374.11 Mbp/m).  
+>  495641 sequences classified (99.13%)  
+>  4360 sequences unclassified (0.87%)  
 
 
 
 #### Pavian
 
-[Github page]()
+[Github page](https://github.com/fbreitwieser/pavian)
 [Complete manual]()
 
 
 ```R
 # Installation
+if (!require(remotes)) { install.packages("remotes") }
+remotes::install_github("fbreitwieser/pavian")
 
+# Run Pavian
+# options(shiny.maxRequestSize=500*1024^2) # Increase max memory
+pavian::runApp(port=5000)
 ```
 
 
