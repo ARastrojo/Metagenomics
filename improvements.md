@@ -10,6 +10,7 @@ UNIT 7. Functional composition inference from marker genes. PICRUSt.
 
 
 ### General
+
 Upload all datasets to oneDrive and create a link for download
 
 Unit 5 --> Functional composition explanation and metagenome comparison merge. Explain functional composition analysis with Humann, and then use STAMP for comparison (We cannot run humann in the computional resources we have)
@@ -19,6 +20,8 @@ Unit 6 --> pycrust + STAMP again
 
 ### Unit 3
 Move quast cgi2html code upwards 
+Crear datos simulados con InSilicoSeq (probar instalar miniconda en cluster)
+
 
 ### Unit 4 
 Use Kraken2 instead of MEGAN (very high RAM consumption)
@@ -28,6 +31,8 @@ Use Kraken2 instead of MEGAN (very high RAM consumption)
 Merge both units
 toy_example.fastq??? Ask Dani
 Update to humann3 --> fail to install on my mac
+Se podrían crear datos simulados con InSilicoSeq (no para comparar, sino para explirar que hay ahí). También se podrían crear al azar y luego subsamplear para crear réplicas, y entonces se podría comparar.
+
 
 ### Unit 7 
 
@@ -41,7 +46,7 @@ Find a dataset for a task (ask Miguel if we can use unit 2 dataset)
 ### Conda Enviroment for testing
 
 ```bash
-conda create -n metag python=3.7
+conda create -n ngs python=3.9
 ```
 
 #### Humann 3
@@ -82,7 +87,6 @@ humann_databases --download uniref uniref90_diamond /path/to/databases --update-
 humann_databases --download utility_mapping full /path/to/databases --update-config yes
 ```
 
-
 humann -i sample_reads.fastq -o sample_results
 
 ***
@@ -95,8 +99,8 @@ humann -i sample_reads.fastq -o sample_results
 
 
 ```bash
-conda create -n tmp python
-conda activate tmp
+# Installation
+conda activate ngs
 pip install InSilicoSeq
 conda deactivate
 ```
@@ -108,9 +112,31 @@ iss generate -k viruses -U 10 --model miseq --output miseq_viruses
 
 
 
+#### Kraken2
+
+[Github page]()
+[Complete manual]()
+
+
+```bash
+# Installation
+conda activate ngs
+conda install -c bioconda
+kraken2conda deactivate
+```
 
 
 
 
+#### Pavian
+
+[Github page]()
+[Complete manual]()
+
+
+```R
+# Installation
+
+```
 
 
