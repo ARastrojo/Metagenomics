@@ -116,3 +116,13 @@ sudo ./VBoxLinuxAdditions.run
 ```
 Reboot system.
 
+#### Complete Virtual Machine image
+
+MD5 (Lubuntu_metag.ova) = eb53666bfe7510827ab20b4e8324294e
+
+```bash
+pip install gdown # to download files from googledrive
+gdown https://drive.google.com/uc?id=1jz037M7kw0yyNs0em3ZsXrKkpq8gw2uG
+```
+
+Import in VirtualBox.
