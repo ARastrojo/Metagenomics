@@ -52,7 +52,8 @@ conda deactivate
 Lo importo de la máquina virtual de Miguel (Metagenomica.ova, md5=8263d0bcfab2fecd697cc25f1e80a8b2) usando conda-pack (ver abajo)
 
 ```bash
-wget ////picrust.tar.gz
+pip install gdown # to download files from googledrive
+gdown https://drive.google.com/uc?id=1CTpbRgrSWT40dlajjM6HU-524dQow0SJ
 mkdir /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust
 tar -xzf picrust.tar.gz -C /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust
 ```
@@ -62,7 +63,8 @@ tar -xzf picrust.tar.gz -C /media/DiscoLocal/BioInformatica/miniconda3/envs/picr
 Lo importo de la máquina virtual de Miguel (Metagenomica.ova, md5=8263d0bcfab2fecd697cc25f1e80a8b2) usando conda-pack (ver abajo)
 
 ```bash
-wget ///stamp.tar.gz
+pip install gdown # to download files from googledrive
+gdown https://drive.google.com/uc?id=1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
 mkdir /media/DiscoLocal/BioInformatica/miniconda3/envs/stamp
 tar -xzf stamp.tar.gz -C /media/DiscoLocal/BioInformatica/miniconda3/envs/stamp
 ```
