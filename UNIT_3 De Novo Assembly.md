@@ -631,6 +631,8 @@ virome_script.sh
 
 > How can we improve the script to used with a different input file?
 
+> Why using _single_cell_ option for a metagenome assembly? Take a look to this [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6511391/).
+
 ## 5. Homework
 
 Repeat all the steps with a viral metagenome from [here](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing).   
