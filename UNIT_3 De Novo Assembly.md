@@ -21,9 +21,9 @@ if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
     if [ -f "/media/DiscoLocal/BioInformatica/miniconda3/etc/profile.d/conda.sh" ]; then
-    	. "/media/DiscoLocal/BioInformatica/miniconda3/etc/profile.d/conda.sh"
+        . "/media/DiscoLocal/BioInformatica/miniconda3/etc/profile.d/conda.sh"
     else
-    	export PATH="/media/DiscoLocal/BioInformatica/miniconda3/bin:$PATH"
+        export PATH="/media/DiscoLocal/BioInformatica/miniconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -376,10 +376,8 @@ spades.py --careful -t 2 -1 ECTV_qf_paired_nohuman_noPhiX_R1.fastq -2 ECTV_qf_pa
 spades.py --isolate -t 2 -1 ECTV_qf_paired_nohuman_noPhiX_R1.fastq -2 ECTV_qf_paired_nohuman_noPhiX_R2.fastq -o ECTV_isolate
 ```
 
-> _isolate_ assembly fails!!!!! 
-
-
-
+> _isolate_ assembly fails!!!!! What can we do? 
+> Hint: to uninstall a package we use _conda remove package_name_
 
 ### 2.2. Check the number of contigs and scaffolds:
 
@@ -470,6 +468,8 @@ A better and more complete way of making assemblies comparison is by using dedic
 
 > **Advice** (This can be complete ignored): It is always better to use existing programs and/or tools, supported by publications, than writing your own (there is no need to reinvent the wheel). However, if your project goal is to develop a new algorithm/program, of course it is worth, but if your are working in the sequencing of a new species genome, why losing the time building a new assembler? This could be applied to every program/script... Moreover, reviewers are very picky with the use of *in house* scripts/programs.
 
+- **Installing Quast**
+
 ```bash
 conda install -c bioconda quast -y
 Collecting package metadata (current_repodata.json): done
@@ -494,25 +494,20 @@ Your installed version is: 2.31
 
 ```
 
-
-> **IMPORTANT**: in my VM, that theoretically is identical to yours, QUAST is not installed. Therefore, we have to install it, and in the way I will show you an easy way to manage custom software (outsize of conda).
+> Fails again!!!! Why?
 
 ```bash
-cd /home/bgm/
-mkdir software
-cd software # This folder will store download programs
-wget https://downloads.sourceforge.net/project/quast/quast-5.0.2.tar.gz
-tar -xzf quast-5.0.2.tar.gz
-rm quast-5.0.2.tar.gz
-cd quast-5.0.2
-python setup.py install # for mac
-cd /home/bgm/
-mkdir bin
-cd bin # This folder will store symbolic links to program executables
-ln -s /home/bgm/software/quast-5.0.2/quast.py quast
-# edit /home/bgm/.bashrc with _vim_ or _nano_ and add the following line
-export PATH=/home/bgm/bin/:$PATH
-# This way, all executable that you link in the bin folder will be in the system path
+# Download and install
+cd /media/DiscoLocal/BioInformatica/software/
+https://sourceforge.net/projects/quast/files/quast-5.2.0.tar.gz
+tar -xzf quast-5.2.0.tar.gz
+cd quast-5.2.0
+python setup.py install
+
+# Link binaries
+ln -s media/DiscoLocal/BioInformatica/software/quast-5.0.2/quast.py quast
+/media/DiscoLocal/BioInformatica/software/quast-5.2.0/build/scripts-3.10/quast.py /media/DiscoLocal/BioInformatica/software/bin/
+source /media/DiscoLocal/BioInformatica/software/profile
 ```
 
 Now that we have QUAST, we must have all contigs/scaffolds from the different assemblies in the same folder, but instead of copying the data, to reduce redundancy and save a little bit of disk space, we are going to make use of symbolic links.
@@ -520,7 +515,7 @@ Now that we have QUAST, we must have all contigs/scaffolds from the different as
 > NOTE: saving a disk space is irrelevant in this case, but when you are working in a real metagenomic or other sequencing projects could be an important issue.
 
 ```bash
-cd /home/bgm/Documents/unit_3/
+cd media/DiscoLocal/BioInformatica/unit_3/
 mkdir quast
 ln -rs ./ECTV_careful/contigs.fasta ./quast/contigs_careful.fasta 
 ln -rs ./ECTV_careful/scaffolds.fasta ./quast/scaffolds_careful.fasta 
@@ -530,12 +525,15 @@ ln -rs ./ECTV_isolate/scaffolds.fasta ./quast/scaffolds_isolate.fasta
 
 > _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create them, it is better to user absolute paths in mac. 
 
-Additionally, in this single genome sequencing example we have a reference genome to compare our assemblies with (This is not possible for metagenomes). You can download the reference genome from Moodle (Unit 3/ECTV\_reference\_genome.fasta).
+Additionally, in this single genome sequencing example we have a reference genome to compare our assemblies with (This is not possible for metagenomes), so we are going to supply this reference genome to quast: 
 
 ```bash
-quast contigs* scaffolds* -R ECTV_reference_genome.fasta
+cd quast
+gdwon https://drive.google.com/uc?id=1si94FUXuiFARsTGirDQH1fMivLGVJCW8
+quast.py contigs* scaffolds* -R ECTV_reference_genome.fasta
 ```
 
+<!--
 > **IMPORTANT**: In my VM, there was an error when running QUAST (*"AttributeError: module 'cgi' has no attribute 'escape'"*). So I did what a good bioinformaticians must do... Copy and paste the error in google, :). To solver the problem we should modify one of the QUAST script by replacing the use of *cgi* library for the *html* one. To do that follow the next commands:
 
 ```bash
@@ -545,7 +543,7 @@ cd /home/bgm/software/quast-5.0.2/quast_libs/site_packages/jsontemplate
 cp jsontemplate.py jsontemplate_original.py
 sed s/cgi/html/g jsontemplate_original.py > jsontemplate.py
 ```
-
+-->
 Take a look to the report.pdf/report.html (also report.txt):
 
 ![Cummulative length](https://user-images.githubusercontent.com/13121779/163284268-3b69abd3-dfe4-4ffc-9350-beb36f96f415.png)
@@ -554,7 +552,12 @@ Take a look to the report.pdf/report.html (also report.txt):
 
 ![Genome stats Screenshot](https://user-images.githubusercontent.com/13121779/163284470-d08f2ff8-4055-4dfe-9bad-09c036259e5e.png)
 
-## 4\. Homework
+
+
+
+
+<!--
+## 5. Homework
 
 Repeat all the steps with a viral metagenome from a human saliva sample (Virome.zip in Unit 3 of Moodle). Compare different *de novo assemblies* options (try _--meta--) or different *kmer* values. You must perform at least 3 different assemblies. Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.). Compare different *de novo assemblies* with QUAST and choose the best based on the obtained metrics (smaller number of contigs, higher N50, smaller L50, longest total assembly length, etc.).
 
@@ -574,3 +577,5 @@ spades.py -t 2 -m 3 -1 R1.fastq -2 R2.fastq -o output_folder
 ```
 
 Submit this document as a task to Moodle/Unit3 before 20th May.
+
+-->
