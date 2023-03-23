@@ -38,7 +38,7 @@ conda create -n ngs python=3.9
 
 > We use python 3.9 because is the version were all the programs seem to work well (if something works, do not touch!!!)
 
-[*Gdwon*](https://pypi.org/project/gdown/)
+[*Gdown*](https://pypi.org/project/gdown/)
 
 To easily download files/folders from Google Drive we are going to use *gdown* package:
 
@@ -184,7 +184,7 @@ conda install -c bioconda trimmomatic -y
 Running Trimmomatic:
 
 ```bash
-trimmomatic PE -phred33 ECTV_R1.fastq ECTV_R2.fastq ECTV_R1_qf_paired.fq ECTV_R1_qf_unpaired.fq ECTV_R2_qf_paired.fq ECTV_R2_qf_unpaired.fq SLIDINGWINDOW:4:20 MINLEN:70
+trimmomatic PE -phred33 ECTV_R1.fastq ECTV_R2.fastq ECTV_R1_qf_paired.fastq ECTV_R1_qf_unpaired.fastq ECTV_R2_qf_paired.fastq ECTV_R2_qf_unpaired.fastq SLIDINGWINDOW:4:20 MINLEN:70
 ```
 
 **Trimmomatic defaults parameters:** LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
@@ -212,8 +212,8 @@ Now check the number of high-quality paired-end reads selected in this pre-proce
 
 ```bash
 mkdir ECTV_QF_Quality
-fastqc ECTV_R1_qf_paired.fq -o ECTV_QF_Quality
-fastqc ECTV_R2_qf_paired.fq -o ECTV_QF_Quality
+fastqc ECTV_R1_qf_paired.fastq -o ECTV_QF_Quality
+fastqc ECTV_R2_qf_paired.fastq -o ECTV_QF_Quality
 ```
 
 **ECTV\_R1\_qf_paired quality plot**
@@ -515,7 +515,7 @@ Now that we have QUAST, we must have all contigs/scaffolds from the different as
 > NOTE: saving a disk space is irrelevant in this case, but when you are working in a real metagenomic or other sequencing projects could be an important issue.
 
 ```bash
-cd media/DiscoLocal/BioInformatica/unit_3/
+cd /media/DiscoLocal/BioInformatica/unit_3/
 mkdir quast
 ln -rs ./ECTV_careful/contigs.fasta ./quast/contigs_careful.fasta 
 ln -rs ./ECTV_careful/scaffolds.fasta ./quast/scaffolds_careful.fasta 
@@ -523,18 +523,18 @@ ln -rs ./ECTV_isolate/contigs.fasta ./quast/contigs_isolate.fasta
 ln -rs ./ECTV_isolate/scaffolds.fasta ./quast/scaffolds_isolate.fasta 
 ```
 
-> _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create them, it is better to user absolute paths in mac. 
+> _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create them, it is better to use absolute paths in mac. 
 
 Additionally, in this single genome sequencing example we have a reference genome to compare our assemblies with (This is not possible for metagenomes), so we are going to supply this reference genome to quast: 
 
 ```bash
 cd quast
-gdwon https://drive.google.com/uc?id=1si94FUXuiFARsTGirDQH1fMivLGVJCW8
+gdown https://drive.google.com/uc?id=1si94FUXuiFARsTGirDQH1fMivLGVJCW8
 quast.py contigs* scaffolds* -R ECTV_reference_genome.fasta
 ```
 
 <!--
-> **IMPORTANT**: In my VM, there was an error when running QUAST (*"AttributeError: module 'cgi' has no attribute 'escape'"*). So I did what a good bioinformaticians must do... Copy and paste the error in google, :). To solver the problem we should modify one of the QUAST script by replacing the use of *cgi* library for the *html* one. To do that follow the next commands:
+> **IMPORTANT**: In my VM, there was an error when running QUAST  v5.0.2 (*"AttributeError: module 'cgi' has no attribute 'escape'"*). So I did what a good bioinformaticians must do... Copy and paste the error in google, :). To solver the problem we should modify one of the QUAST script by replacing the use of *cgi* library for the *html* one. To do that follow the next commands:
 
 ```bash
 # Open a new terminal window/tab
@@ -552,30 +552,101 @@ Take a look to the report.pdf/report.html (also report.txt):
 
 ![Genome stats Screenshot](https://user-images.githubusercontent.com/13121779/163284470-d08f2ff8-4055-4dfe-9bad-09c036259e5e.png)
 
+## 4. _De novo_ Assembly of metagenome (virome)
+
+In order to have a more realistic example of the whole process we are going to use simulated metagenomic reads. I have used [InSilicoSeq](https://github.com/HadrienG/InSilicoSeq). The advantage of using simulated reads instead of real metagenomic data resides in the fact that with simulated reads we can have the original genomes used for the simulation and the proportion of each one in the data. 
+
+To speed up the process, and to show you how to _automate_ it, in this case we are going to use a _bash_ script:
+
+```bash
+#!/bin/bash
+
+mkdir unit_3b
+cd unit_3b
 
 
+# Download reads
+gdown https://drive.google.com/uc?id=1QModYfordyNU0LjnE27-plr-QEftbSi5
+tar -xzf virome_1.tar.gz
+
+# Raw reads quality  assessment
+mkdir quality
+fastqc virome_1_R1.fastq.gz -o quality
+fastqc virome_1_R2.fastq.gz -o quality
+
+# Quality filtering
+trimmomatic PE -phred33 virome_1_R1.fastq.gz virome_1_R2.fastq.gz \
+    virome_1_R1_qf_paired.fq.gz virome_1_R1_qf_unpaired.fq.gz \
+    virome_1_R2_qf_paired.fq.gz virome_1_R2_qf_unpaired.fq.gz \
+    SLIDINGWINDOW:4:20 MINLEN:150 LEADING:20 TRAILING:20 AVGQUAL:20
+
+# QF reads quality assessment
+fastqc virome_1_R1_qf_paired.fq.gz -o quality
+fastqc virome_1_R2_qf_paired.fq.gz -o quality
 
 
-<!--
+# Decontaminating human reads
+gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
+bowtie2 -x ./human_cds_index/human_cds -1 virome_1_R1_qf_paired.fq.gz -2 virome_1_R2_qf_paired.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_R%.fq.gz -S tmp.sam
+
+# Decontaminating PhiX174 reads
+wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Sinsheimervirus_phiX174/latest_assembly_versions/GCF_000819615.1_ViralProj14015/GCF_000819615.1_ViralProj14015_genomic.fna.gz
+gunzip GCF_000819615.1_ViralProj14015_genomic.fna.gz
+bowtie2-build GCF_000819615.1_ViralProj14015_genomic.fna phix
+
+bowtie2 -x phix -1 virome_1_qf_paired_nonHuman_R1.fq.gz -2 virome_1_qf_paired_nonHuman_R2.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_nonPhix_R%.fq.gz -S tmp.sam
+
+# Assembly
+spades.py -t 4 --careful -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_careful
+spades.py -t 4 --meta    -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_meta
+spades.py -t 4 --sc      -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_sc
+
+# Assembly analysis
+mkdir quast
+ln -rs ./virome_1_careful/contigs.fasta   ./quast/virome_1_contigs_careful.fasta
+ln -rs ./virome_1_careful/scaffolds.fasta ./quast/virome_1_scaffolds_careful.fasta
+ln -rs ./virome_1_meta/contigs.fasta      ./quast/virome_1_contigs_meta.fasta
+ln -rs ./virome_1_meta/scaffolds.fasta    ./quast/virome_1_scaffolds_meta.fasta
+ln -rs ./virome_1_sc/contigs.fasta        ./quast/virome_1_contigs_sc.fasta
+ln -rs ./virome_1_sc/scaffolds.fasta      ./quast/virome_1_scaffolds_sc.fasta
+ln -rs ./virome_1_genomes.fasta          ./quast/virome_1_genomes.fasta
+cd quast
+quast.py virome_1_contigs_careful.fasta virome_1_contigs_meta.fasta virome_1_contigs_sc.fasta virome_1_scaffolds_careful.fasta virome_1_scaffolds_meta.fasta virome_1_scaffolds_sc.fasta -R virome_1_genomes.fasta
+
+```
+
+Create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script or in /media/DiscoLocal/BioInformatica/bin/). Then, we have to give execution permision to the file:
+
+```bash
+chmod 755 virome_script.sh 
+# or 
+chmod +x virome_script.sh
+````
+
+Now, run the script:
+```bash
+cd /media/DiscoLocal/BioInformatica/
+virome_script.sh
+```
+
+> How can we improve the script to used with a different input file?
+
 ## 5. Homework
 
-Repeat all the steps with a viral metagenome from a human saliva sample (Virome.zip in Unit 3 of Moodle). Compare different *de novo assemblies* options (try _--meta--) or different *kmer* values. You must perform at least 3 different assemblies. Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.). Compare different *de novo assemblies* with QUAST and choose the best based on the obtained metrics (smaller number of contigs, higher N50, smaller L50, longest total assembly length, etc.).
+Repeat all the steps with a viral metagenome from [here](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing).   
+
+Compare different *de novo assemblies* options (try --meta) or different *kmer* values or different quality filtering parameters.  
+
+You must perform at least 3 different assemblies. 
+
+Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.). Compare different *de novo assemblies* with QUAST and choose the best based on the obtained metrics (smaller number of contigs, higher N50, smaller L50, longest total assembly length, etc.).
 
 > NOTE: In the quality filtering step, modify the MINLEN argument considering the original read length. Consider that reads with a minimum of 50% of the average original size are ok for subsequent analyses.
 
-> NOTE: Importantly, you do not have a reference genome for a metagenome.
-
-| File name | MD5 |
-| --- | --- |
-| virome_R1.fastq | cd891dfc865f01c8f3923edd55dacde5 |
-| virome_R2.fastq | 28f0d0ace9fb45af8b2595cbc78fa2bd |
-
-> IMPORTANT: SPAdes uses a lot of RAM memory for the assembly and our the virtual machines only have 4 Gb of RAM. To avoid SPAdes to crash while trying different assemblies to should reduce de number on threads used by de assembler (-t 2) and the available amount of memory that SPAdes can used (-m 3).
+> IMPORTANT: SPAdes uses a lot of RAM memory for the assembly and our the virtual machines only have 4 Gb of RAM. To avoid SPAdes to crash while trying different assemblies to should reduce de number on threads used by de assembler (-t 2) and the available amount of memory that SPAdes can used (-m 12).
 
 ```bash
-spades.py -t 2 -m 3 -1 R1.fastq -2 R2.fastq -o output_folder
+spades.py -t 2 -m 12 -1 R1.fastq -2 R2.fastq -o output_folder
 ```
 
 Submit this document as a task to Moodle/Unit3 before 20th May.
-
--->
