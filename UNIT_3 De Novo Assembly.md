@@ -315,7 +315,7 @@ gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2
 - **Aligning reads against human cds**
 
 ```bash
-bowtie2 -x human_cds -1 ECTV_R1_qf_paired.fastq -2 ECTV_R2_qf_paired.fastq --un-conc ECTV_qf_paired_nohuman_R%.fastq -S tmp.sam
+bowtie2 -x human_cds_index/human_cds -1 ECTV_R1_qf_paired.fastq -2 ECTV_R2_qf_paired.fastq --un-conc ECTV_qf_paired_nohuman_R%.fastq -S tmp.sam
 ```
 
 > *tmp.sam* contains the aligned reads that we are not interested in, so we can remove this file.
