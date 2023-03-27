@@ -286,7 +286,7 @@ ln -s /media/DiscoLocal/BioInformatica/software/bowtie2-2.5.1-linux-x86_64/bowti
 ln -s /media/DiscoLocal/BioInformatica/software/bowtie2-2.5.1-linux-x86_64/bowtie2-build .
 
 # Now we have to tell the shell were to find the binaries by editing /media/DiscoLocal/BioInformatica/profile using _vim_ or _nano_ and adding the next line:
-export PATH:/media/DiscoLocal/BioInformatica/bin/:$PATH
+export PATH=/media/DiscoLocal/BioInformatica/bin/:$PATH
 
 # Finally, we need to initialize the profile
 source /media/DiscoLocal/BioInformatica/profile
