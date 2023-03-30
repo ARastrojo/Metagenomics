@@ -645,10 +645,10 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 
 > NOTE: In the quality filtering step, modify the MINLEN argument considering the original read length. Consider that reads with a minimum of 50% of the average original size are ok for subsequent analyses.
 
-> IMPORTANT: SPAdes uses a lot of RAM memory for the assembly and our the virtual machines only have 4 Gb of RAM. To avoid SPAdes to crash while trying different assemblies to should reduce de number on threads used by de assembler (-t 2) and the available amount of memory that SPAdes can used (-m 12).
+> IMPORTANT: SPAdes uses a lot of RAM memory for the assembly and our the virtual machines only have 4 Gb of RAM. To avoid SPAdes to crash while trying different assemblies to should reduce de number on threads used by de assembler (-t 2) and the available amount of memory that SPAdes can used (-m 4). However, using the local SPAdes instalation (16GB of RAM and 4 cores/threads) we do not need to limit the memory. 
 
 ```bash
-spades.py -t 2 -m 12 -1 R1.fastq -2 R2.fastq -o output_folder
+spades.py -t 2 -m 4 -1 R1.fastq -2 R2.fastq -o output_folder
 ```
 
 Submit this document as a task to Moodle/Unit3 before 20th May.
