@@ -166,17 +166,17 @@ To run MEGAN write MEGAN a in terminal window (from _ngs_ environment).
 
 _Click File --> Import From Blast_
 
-![ImportBlast](https://github.com/ARastrojo/Metagenomics/blob/a1a627c422c16ab8106500caf906b4e8bad22e03/images/megan_import.png)
+![ImportBlast](https://github.com/ARastrojo/Metagenomics/blob/9c692607b39e7a8cbfd7b839e261d74c67034cb9/images/megan_import.png)
 
 To specify the BLAST output file, click on the folder at the right and in the new window (choose “All files” and select the diamond blast tabular file ending in .m8). 
 
 Choose the <u>BlastTab format</u> and the <u>Blastx mode</u>.
 
-Load also the original reads (in fastq format) used for the Blastx.
+Load also the original reads (in fastq format) used for the Blastx (sometimes MEGAN detect automatically the fastq read file from the folder).
 
 Click on Next and Load the Accession mapping file (unzipped). 
 
-![MappingFile](https://user-images.githubusercontent.com/13121779/165117918-aaf57afc-a942-4fec-8c94-53c88fe60243.png)
+![MappingFile](https://github.com/ARastrojo/Metagenomics/blob/9c692607b39e7a8cbfd7b839e261d74c67034cb9/images/megan_mapping_file.png)
 
 
 
