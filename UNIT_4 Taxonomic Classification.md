@@ -20,7 +20,7 @@ ln -rs ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz ./virome_1_qf_R2.
 # Note that we have "modify" the name of the files in the link, just for convinience
 ```
 
-> _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create them, it is better to use absolute paths in mac. 
+> _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create, it is better to use absolute paths in mac. 
 
 Addittionaly, we are going to download quality filtered reads from *virome_2* to compare taxonomic classification from both viromes:
 
@@ -66,7 +66,7 @@ This will create a binary DIAMOND database file with the name: viralproteins.dmn
 
 - **Align reads using blastx-like command:**
 
-As we have paired reads, and Diamond cannot handle them, we can run Diamond for each pair and them merge the outputs or we can merge paired reads in a single file and run Diamond just once. 
+As we have paired reads, and Diamond cannot handle them, we can run Diamond for each pair and then merge the outputs or we can merge paired reads in a single file and run Diamond just once. 
 
 ```bash
 # This is just an example, DO NOT RUN
@@ -221,7 +221,7 @@ In the new windows import both *.rma6* files. Then choose "Use Absolute counts" 
 
 ![megan_compare_results](https://github.com/ARastrojo/Metagenomics/blob/65aa0988d0817c2470482b463d9569adcd1d1e1c/images/megan_compare_2.png)
 
-We can obtain a general view of the viromes. For instance, in virome 2 there are many bacteriophages (viruses than infect bacteria) from families _Myoviridae_, _Podoviridae_ and _Siphoviridae_ and viruses from the _Geminiviridae family, while in virome 1 in enriched in RNA virures (mainly unclassified).  
+We can obtain a general view of the viromes. For instance, in virome 2 there are many bacteriophages (viruses than infect bacteria) from families _Myoviridae_, _Podoviridae_ and _Siphoviridae_ and viruses from the _Geminiviridae family, while in virome 1 in enriched in RNA virures (mainly unclassified). 
 
 
 <!--
