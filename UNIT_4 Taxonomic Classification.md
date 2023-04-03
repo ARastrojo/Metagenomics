@@ -34,6 +34,7 @@ gdown https://drive.google.com/uc?id=1TuTyun2dlmUMvsF6N9LK6zAySI3xvqtx
 # d1894eec561128bc29e4a3050e0eafaa  virome_2_qf_R2.fq.gz
 ```
 
+> Take a look to scripts _trimo.sh_ and _decontaminate.sh_ under script folder in github. 
 
 ## 2. Taxonomy using [Diamond and MEGAN ](https://currentprotocols.onlinelibrary.wiley.com/doi/10.1002/cpz1.59)
 
@@ -63,7 +64,7 @@ This will create a binary DIAMOND database file with the name: viralproteins.dmn
 
 <!--Sometimes this library is required: sudo apt install libnss-db-->
 
-- **Align reads using blastx-like command:
+- **Align reads using blastx-like command:**
 
 As we have paired reads, and Diamond cannot handle them, we can run Diamond for each pair and them merge the outputs or we can merge paired reads in a single file and run Diamond just once. 
 
@@ -151,7 +152,9 @@ conda activate ngs
 conda install -c bioconda megan -y
 ```
 
-Additionally, we need to download the mapping file [megan-map-Feb2022-ue.db.zip](https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip) to provided taxonomic information of the database to MEGAN. 
+Additionally, we need to download the mapping file [megan-map-Feb2022-ue.db.zip](https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip) to provide taxonomic information of the database to MEGAN. 
+
+<!--https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022.db.zip-->
 
 ```bash
 wget https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip
@@ -164,7 +167,7 @@ To run MEGAN write MEGAN a in terminal window (from _ngs_ environment).
 
 - **Import Diamond/blast output files (ending in .m8.) to the MEGAN6 graphical user interface**
 
-_Click File --> Import From Blast_
+Click File --> Import From Blast
 
 ![ImportBlast](https://github.com/ARastrojo/Metagenomics/blob/9c692607b39e7a8cbfd7b839e261d74c67034cb9/images/megan_import.png)
 
@@ -178,48 +181,57 @@ Click on Next and Load the Accession mapping file (unzipped).
 
 ![MappingFile](https://github.com/ARastrojo/Metagenomics/blob/9c692607b39e7a8cbfd7b839e261d74c67034cb9/images/megan_mapping_file.png)
 
+Then click on “Apply” (and wait.....)
 
+> Although we have reduce the number of input reads to dicrease memory consumption, in the virtual machine (4 Gb of RAM) the analysis can get blocked or sometimes the program suddenly gets close...
 
-Then click on “Apply”
+**Results: Family level and with the number of reads**
 
+![megan_results](https://github.com/ARastrojo/Metagenomics/blob/9dbe55d2e92d8a92b4cdcd292077fc320a2c809b/images/megan_results.png)
 
-**Results**
-
-![megan1](https://user-images.githubusercontent.com/13121779/165253205-f54ebf09-09b1-4461-8f32-74be2af90aaa.png)
-
-
-
-
-
-Once you have the graphical overview of the taxomomic composition of the reads from the example virome we can explore MEGAN6 options:
+Once you have the graphical overview of the taxomomic composition of the reads from the example virome we can explore MEGAN6 options (optinal):
 1. Change the taxonomic level in “Rank” to Genera, Species or Family (Tree > Rank).
 2. Expand or collapse the tree or change the tree format
 3. In the Tree tab, choose “Show Number of Summarized”
 4. We can copy data by clicking on Options/List Summary, paste de data in LibreOffice or Excel using “:” to divide data in columns.
 5. Check the alignments from a specific taxon by clicking on that with the right
 mouse button. Select “Inspect” option.
-6. We can change LCA parameters in Options and increase the minimal score to 60 and low the max e-value allow to 10<sup>-10</sup> and the min complexity to 0.5 in order to reduce false positive alignments.
-
-**Results: Family level and with the number of reads**
-
-![megan2](https://user-images.githubusercontent.com/13121779/165253366-6b97baa5-436e-432f-a718-0c7e643e8bc8.png)
+6. We can change LCA parameters in Options and increase the minimal score to 60 and reduce the max e-value allow to 10<sup>-10</sup> and the min complexity to 0.5 in order to reduce false positive alignments.
 
 
+> MEGAN results are stored in a file called *virome_1_10k.rma6* created in the same folder than input files.
 
+- **Repeat the process for virome 2**
+
+![megan_virome_2](https://github.com/ARastrojo/Metagenomics/blob/1473360499fcdc629f34a824b29bbb976223ef6a/images/megan_results_2.png)
+
+- **Compare viromes with MEGAN**
+
+Now, we can compare the results from the taxonomic classification of both viromes. Close previous MEGAN windows, and click in "no" when MEGAN ask you to quit the program. 
+
+Now click in _File --> Compare_
+
+In the new windows import both *.rma6* files. Then choose "Use Absolute counts" and disable "Ignore all unassigned reads". 
+
+> Usually we are going to use the default options "Use Normalized count", to reduce differences cause by different sequencing depth, however, we have subsample both viromes to the same depth and to some extent we have already normalized the samples. 
+
+![megan_compare](https://github.com/ARastrojo/Metagenomics/blob/65aa0988d0817c2470482b463d9569adcd1d1e1c/images/megan_compare.png)
+
+- **Comparison results**
+
+![megan_compare_results](https://github.com/ARastrojo/Metagenomics/blob/65aa0988d0817c2470482b463d9569adcd1d1e1c/images/megan_compare_2.png)
+
+We can obtain a general view of the viromes. For instance, in virome 2 there are many bacteriophages (viruses than infect bacteria) from families _Myoviridae_, _Podoviridae_ and _Siphoviridae_ and viruses from the _Geminiviridae family, while in virome 1 in enriched in RNA virures (mainly unclassified).  
 
 
 <!--
-~/megan/MEGAN -g -x "load taxGIFile=gi_taxid_prot.bin; import blastfile=./my.blastx meganfile=test.blastx.rma"
-
-https://www.seqanswers.com/forum/bioinformatics/bioinformatics-aa/38124-megan-by-command-line
--->
 
 ## Taxonomy using [Kraken2]()
 
 Can we compare 2 viromes with Kraken2 (Pavian?)
 
 
-<!--
+
 ## 4. HOMEWORK
 
 Follow the workflow of this tutorial for the taxonomic binning of the virome reads and contigs used as homework in the unit_3.
