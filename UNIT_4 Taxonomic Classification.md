@@ -350,9 +350,11 @@ Upload both reports to Pavian:
 
 Now, click on _"Samples"_ to see Sankey plots:
 
-- **Virome_1**
+- **Virome_1**  
+
 ![Virome_1_sankey](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/virome_1_sankey.png)
-- **Virome_2**
+- **Virome_2**  
+
 ![Virome_2_sankey](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/virome_2_snkey.png)
 
 These plots can be configure in many ways. 
