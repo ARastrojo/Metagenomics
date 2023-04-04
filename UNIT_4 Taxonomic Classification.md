@@ -350,7 +350,9 @@ Upload both reports to Pavian:
 
 Now, click on _"Samples"_ to see Sankey plots:
 
+- **Virome_1**
 ![Virome_1_sankey](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/virome_1_sankey.png)
+- **Virome_2**
 ![Virome_2_sankey](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/virome_2_snkey.png)
 
 These plots can be configure in many ways. 
@@ -359,7 +361,7 @@ Finally, we can compare both viromes classifications by clicking in _"comparison
 
 ![pavian_comparison](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/pavian_comparison.png)
 
-
+<!--
 ## 4. HOMEWORK
 
 Follow the workflow of this tutorial for the taxonomic binning of the virome reads and contigs used as homework in the unit_3.
@@ -371,3 +373,5 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 **Optional: run the same analysis but using the assembled contigs and try to compare the results using MEGAN (File/Compare and load both rma6 files created while making the individual analysis).
 
 Deadline: 20th May.
+
+-->
