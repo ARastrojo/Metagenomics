@@ -224,12 +224,140 @@ In the new windows import both *.rma6* files. Then choose "Use Absolute counts" 
 We can obtain a general view of the viromes. For instance, in virome 2 there are many bacteriophages (viruses than infect bacteria) from families _Myoviridae_, _Podoviridae_ and _Siphoviridae_ and viruses from the _Geminiviridae family, while in virome 1 in enriched in RNA virures (mainly unclassified). 
 
 
-<!--
 
-## Taxonomy using [Kraken2]()
 
-Can we compare 2 viromes with Kraken2 (Pavian?)
+## Taxonomy using [Kraken2](https://ccb.jhu.edu/software/kraken2/)
 
+Using the same dataset (virome_1 and virome_2) we are going to try another classification method. This time, instead of being an alignment-based program, we will use a _k-mer_ based program called [**Kraken2**](https://github.com/DerrickWood/kraken2). _K-mer_-based algorithms are much more faster than alignment-based, but usually they have a lower sentitivity. However, the high computation requirements of alignment-based programs are sometimes prohibitive and _k-mers_-based alternatives are the only choice. 
+
+In our case, with low computational resources, as you have seen using MEGAN, we have had to reduce the number of reads, by subsampling, to perform the analysis, but using Kraken2 we will be able to analyse the whole dataset (and using paired reads). 
+
+``` 
+# Installing Kraken2
+conda activate ngs
+conda install -c bioconda kraken2
+conda deactivate
+```
+
+As with alignment-based programs, here we also have to prepare an adequate database. It is possible to create a custom database for Kraken2 ([Kraken2 manual](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown)). However, the developers of Kraken2 have already created several useful databases and we are going to download the pre-built viral database [Pre-built Databases](https://benlangmead.github.io/aws-indexes/k2):
+
+```bash
+# Download viral database
+wget https://genome-idx.s3.amazonaws.com/kraken/k2_viral_20221209.tar.gz
+mkdir k2_viral_20221209
+tar -xzf k2_viral_20221209.tar.gz -C k2_viral_20221209
+````
+
+- **Running Kraken2**
+
+```bash
+# Virome 1
+kraken2 -db k2_viral_20221209 --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz --report virome_1_report.txt > virome_1_k2_output.txt 
+````
+
+> Loading database information... done.  
+> 79965 sequences (39.54 Mbp) processed in **8.468s** (566.6 Kseq/m, 280.12 Mbp/m).  
+>   78469 sequences classified (98.13%)  
+>   1496 sequences unclassified (1.87%)  
+
+```bash
+# Virome 2
+kraken2 -db k2_viral_20221209 --paired virome_2_qf_R1.fq.gz virome_2_qf_R2.fq.gz --report virome_2_report.txt > virome_2_k2_output.txt 
+```
+
+> Loading database information... done.  
+> 101345 sequences (60.42 Mbp) processed in **10.152s** (599.0 Kseq/m, 357.11 Mbp/m).  
+>   96843 sequences classified (95.56%)  
+>   4502 sequences unclassified (4.44%)  
+
+- **Kraken2 output format**
+
+| C/U | Read_name       | Assigned Taxid | Read length (paired) | Taxid:Assigned kmer                                        |
+|-----|-----------------|----------------|----------------------|------------------------------------------------------------|
+| C   | NC_048825.1_0_0 | 2656532        | 300\|301             | 2656532:71 2842796:5 2656532:2 2842796:16 2656532:34 [..]  |
+| C   | NC_048825.1_1_0 | 2656532        | 300\|281             | 2656532:179 2842796:1 2656532:9 2842796:4 2656532:28 [..]  |
+| C   | NC_048825.1_2_0 | 2656532        | 293\|299             | 0:14 2656532:5 0:14 2656532:1 0:6 2656532:37 0:1 [..]      |
+
+> C/U: Classified/unclassified
+
+As you can see, the output is difficult to used it. 
+
+- **Kraken2 report**
+
+Kraken2 report shows a more hierarchical view:
+
+<pre>
+  4.50  4559    4559    U       0       unclassified
+ 95.50  96786   0       R       1       root
+ 95.50  96786   0       D       10239     Viruses
+ 39.09  39620   0       D1      2731341     Duplodnaviria
+ 39.09  39620   0       K       2731360       Heunggongvirae
+ 39.09  39620   0       P       2731618         Uroviricota
+ 39.09  39620   81      C       2731619           Caudoviricetes
+  9.44  9563    1478    G       545932              Bruynoghevirus
+  7.76  7866    0       S       2040657               Bruynoghevirus PAA2
+  7.76  7866    7866    S1      1429758                 Pseudomonas phage phiIBB-PAA2
+  0.05  54      0       G1      2562667               unclassified Bruynoghevirus
+  0.05  54      54      S       1640969                 Pseudomonas phage DL54
+  0.04  43      0       S       2040659               Bruynoghevirus PaP4
+  0.04  43      43      S1      1273709                 Pseudomonas phage PaP4
+  0.04  39      0       S       2040658               Bruynoghevirus TL
+  0.04  39      39      S1      1406974                 Pseudomonas phage TL
+  0.03  31      4       S       188350                Bruynoghevirus PaP3
+  0.01  14      14      S1      1234701                 Pseudomonas phage vB_PaeP_p2-10_Or1
+  0.01  13      13      S1      2905964                 Pseudomonas phage PaP3
+  0.03  28      0       S       2040656               Bruynoghevirus Ab22
+  0.03  28      28      S1      1548906                 Pseudomonas phage vB_PaeP_C2-10_Ab22
+  0.02  19      19      S       484895                Bruynoghevirus LUZ24
+  0.00  5       0       S       2040655               Bruynoghevirus CHU
+  0.00  5       5       S1      1589273                 Pseudomonas phage PhiCHU
+  8.77  8890    2143    G       1921407             Pakpunavirus
+  6.54  6628    407     G1      2109910               unclassified Pakpunavirus
+  6.13  6216    6216    S       1716042                 Pseudomonas phage PaoP5
+  0.00  3       3       S       1735586                 Pseudomonas phage C11
+  0.00  1       1       S       1716041                 Pseudomonas phage K8
+  0.00  1       1       S       1777072                 Pseudomonas phage K5
+  0.03  32      0       S       1921411               Pakpunavirus PAKP1
+  0.03  32      32      S1      743813                  Pseudomonas phage PAK_P1
+</pre>
+
+But, it is still difficult to interpert. The columns of the report are described below:
+
+1) Percentage of fragments covered by the clade rooted at this taxon
+2) Number of fragments covered by the clade rooted at this taxon
+3) Number of fragments assigned directly to this taxon
+4) A rank code indicating (U)nclassified, (R)oot, (D)omain, (K)ingdom, (P)hylum, (C)lass, (O)rder, (F)amily, (G)enus, (S)pecies. Taxa that are not any of these 10 ranks have a rank code that is formed by using the rank code of the closest ancestor rank with a number indicating the distance from that rank. Ex. Pseudomonas phage phiIBB-PAA2 has a rank code of “S1” because it is a subspecies one step below Bruynoghevirus PAA2.
+5) The Taxonomic ID number from NCBI
+6) Indented Scientific Name
+
+- **Visualization of Kraken2 results using [Pavian](https://github.com/fbreitwieser/pavian)**
+
+Pavian can be used online, but a low memory limit. To use Pavian without memory limit with have to make use of the R package (open RStudio):
+
+```R
+# Installing Pavian
+if (!require(remotes)) { install.packages("remotes") }
+remotes::install_github("fbreitwieser/pavian")
+
+# Run Pavian server
+options(shiny.maxRequestSize=500*1024^2) # Increase max memory available
+pavian::runApp(port=5000)
+```
+
+Upload both reports to Pavian:
+
+![pavian_upload](https://github.com/ARastrojo/Metagenomics/blob/5d53e3c500a8d9ee5208fa83a64c482ae8ea23f8/images/pavian_load.png)
+
+Now, click on _"Samples"_ to see Sankey plots:
+
+![Virome_1_sankey](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/virome_1_sankey.png)
+![Virome_2_sankey](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/virome_2_snkey.png)
+
+These plots can be configure in many ways. 
+
+Finally, we can compare both viromes classifications by clicking in _"comparison"_:
+
+![pavian_comparison](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/pavian_comparison.png)
 
 
 ## 4. HOMEWORK
@@ -243,5 +371,3 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 **Optional: run the same analysis but using the assembled contigs and try to compare the results using MEGAN (File/Compare and load both rma6 files created while making the individual analysis).
 
 Deadline: 20th May.
-
--->
