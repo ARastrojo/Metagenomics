@@ -363,13 +363,13 @@ Finally, we can compare both viromes classifications by clicking in _"comparison
 
 ![pavian_comparison](https://github.com/ARastrojo/Metagenomics/blob/8be9189b60d7fc9e034a6c64e1f8d697790517c3/images/pavian_comparison.png)
 
-> A good paper with metagenomic comparison tools _Terrón-Camero, L. C., Gordillo-González, F., Salas-Espejo, E., & Andrés-León, E. (2022). Comparison of Metagenomics and Metatranscriptomics Tools: A Guide to Making the Right Choice. Genes, 13(12). https://doi.org/10.3390/genes13122280_
+> A good paper with metagenomic comparison tools: _Terrón-Camero, L. C., Gordillo-González, F., Salas-Espejo, E., & Andrés-León, E. (2022). Comparison of Metagenomics and Metatranscriptomics Tools: A Guide to Making the Right Choice. Genes, 13(12). https://doi.org/10.3390/genes13122280_
 
 
 ## 4. HOMEWORK
 
 Follow the workflow of this tutorial for the taxonomic binning and comparison of 2 viromes, the one used in unit_3 and another one  from [here](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing) (quality filtering should be performed). Choose one of the taxonomic binning methods described here (alignment-based or k-mer-based). 
 
-Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.) and the most relevant results with the taxonomy assessment of the viromes and its comparison (use family level).
+Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.) and the most relevant results with the taxonomy assessment of the viromes and their comparison (use family level). Note that across with simulated virome files there is a file containing the viral genomes used for the simulation, their relative abundance and their taxonomy, therefore, the quality of the taxonomy binning can be assessed, at least qualitatively.
 
 Deadline: 20th May.
