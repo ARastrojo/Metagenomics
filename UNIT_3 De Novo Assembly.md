@@ -651,4 +651,4 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 spades.py -t 2 -m 4 -1 R1.fastq -2 R2.fastq -o output_folder
 ```
 
-Submit this document as a task to Moodle/Unit3 before 20th May.
+Submit this document as a task to Moodle/Unit3 before May 20th.
