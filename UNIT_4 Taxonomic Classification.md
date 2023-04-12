@@ -221,9 +221,7 @@ In the new windows import both *.rma6* files. Then choose "Use Absolute counts" 
 
 ![megan_compare_results](https://github.com/ARastrojo/Metagenomics/blob/65aa0988d0817c2470482b463d9569adcd1d1e1c/images/megan_compare_2.png)
 
-We can obtain a general view of the viromes. For instance, in virome 2 there are many bacteriophages (viruses than infect bacteria) from families _Myoviridae_, _Podoviridae_ and _Siphoviridae_ and viruses from the _Geminiviridae family, while in virome 1 in enriched in RNA virures (mainly unclassified). 
-
-
+We can obtain a general view of the viromes. For instance, in virome 2 there are many bacteriophages (viruses than infect bacteria) from families _Myoviridae_, _Podoviridae_ and _Siphoviridae_ and viruses from the _Geminiviridae_ family, while in virome 1 in enriched in RNA virures (mainly unclassified). 
 
 
 ## Taxonomy using [Kraken2](https://ccb.jhu.edu/software/kraken2/)
