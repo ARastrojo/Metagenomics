@@ -342,6 +342,35 @@ options(shiny.maxRequestSize=500*1024^2) # Increase max memory available
 pavian::runApp(port=5000)
 ```
 
+```bash
+Manually installation of Pavian (compilling from source)
+
+# R: 
+install.packages("remotes")
+remotes::install_github("fbreitwieser/shinyFileTree")
+install.packages('shinydashboard')
+install.packages('shinyjs')
+install.packages('shinyWidgets')
+install.packages('DT')
+install.packages('plyr')
+install.packages('RColorBrewer')
+install.packages('colorspace')
+install.packages('ggplot2')
+install.packages('rhandsontable')
+
+# Download from source:
+cd /media/DiscoLocal/BioInformatica/
+gdown https://github.com/fbreitwieser/pavian/archive/refs/tags/v1.0.zip
+unzip v1.0.zip
+
+# R: install.packages("/media/DiscoLocal/BioInformatica/pavian-1.0", repos = NULL, type="source")
+
+```
+
+
+
+
+
 Upload both reports to Pavian:
 
 ![pavian_upload](https://github.com/ARastrojo/Metagenomics/blob/5d53e3c500a8d9ee5208fa83a64c482ae8ea23f8/images/pavian_load.png)
@@ -372,28 +401,3 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 
 Deadline: 20th May.
 
-
-<!--
-Pavian
-
-R: 
-install.packages("remotes")
-remotes::install_github("fbreitwieser/shinyFileTree")
-install.packages('shinydashboard')
-install.packages('shinyjs')
-install.packages('shinyWidgets')
-install.packages('DT')
-install.packages('plyr')
-install.packages('RColorBrewer')
-install.packages('colorspace')
-install.packages('ggplot2')
-install.packages('rhandsontable')
-
-# Download from source:
-cd /media/DiscoLocal/BioInformatica/
-gdown https://github.com/fbreitwieser/pavian/archive/refs/tags/v1.0.zip
-unzip v1.0.zip
-
-R: install.packages("/media/DiscoLocal/BioInformatica/pavian-1.0", repos = NULL, type="source")
-
--->
