@@ -371,3 +371,29 @@ Follow the workflow of this tutorial for the taxonomic binning and comparison of
 Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.) and the most relevant results with the taxonomy assessment of the viromes and their comparison (use family level). Note that across with simulated virome files there is a file containing the viral genomes used for the simulation, their relative abundance and their taxonomy, therefore, the quality of the taxonomy binning can be assessed, at least qualitatively.
 
 Deadline: 20th May.
+
+
+<!--
+Pavian
+
+R: 
+install.packages("remotes")
+remotes::install_github("fbreitwieser/shinyFileTree")
+install.packages('shinydashboard')
+install.packages('shinyjs')
+install.packages('shinyWidgets')
+install.packages('DT')
+install.packages('plyr')
+install.packages('RColorBrewer')
+install.packages('colorspace')
+install.packages('ggplot2')
+install.packages('rhandsontable')
+
+# Download from source:
+cd /media/DiscoLocal/BioInformatica/
+gdown https://github.com/fbreitwieser/pavian/archive/refs/tags/v1.0.zip
+unzip v1.0.zip
+
+R: install.packages("/media/DiscoLocal/BioInformatica/pavian-1.0", repos = NULL, type="source")
+
+-->
