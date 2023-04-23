@@ -192,6 +192,43 @@ These maps are interactive and we can explore our data in detail.
 
 ![detail](https://github.com/ARastrojo/Metagenomics/blob/d2c2cd2c8c06a9b42a66fd09d360af90f27d516e/images/ipath_detail.png)
 
+> **Optional**: to map all functional genes merging all samples from different groups (sick vs healthy for instance) we need to run the following code:
+
+```bash
+conda deactivate
+conda activate qiime2
+
+# import biom to artifact
+qiime tools import --input-path otus.biom --type 'FeatureTable[Frequency]' --input-format BIOMV100Format --output-path otus.qza
+
+# Group by disease status
+qiime feature-table group   --i-table otus.qza   --p-axis sample   --m-metadata-file map.tsv   --m-metadata-column Disease_state   --p-mode sum   --o-grouped-table otus-merged.qza
+
+# export artifact to biom
+qiime tools export --input-path otus-merged.qza --output-path exported
+cp exported/feature-table.biom otus-merge.biom
+
+conda deactivate
+
+# Normalize copy number and predict functional genes
+conda activate picrust
+normalize_by_copy_number.py -i otus-merge.biom -o otus-merge_corrected.biom 
+predict_metagenomes.py -i otus-merge_corrected.biom -o merge-ko_predictions.biom
+
+# Parse functional genes to map in iPATH
+biom convert -i merge-ko_predictions.biom -o merge-ko_predictions.txt --to-tsv --header-key KEGG_Description 
+
+# # Constructed from biom file
+# #OTU ID Healthy Sick    KEGG_Description
+# K01365  0.0     0.0     ["cathepsin L [EC:3.4.22.15]"]
+# K01364  0.0     0.0     ["streptopain [EC:3.4.22.10]"]
+# K01361  177.0   56.0    ["lactocepin [EC:3.4.21.96]"]
+
+gawk 'NR>2{if ($2 > 0 && $3 > 0 ) print $1 " #00ff00 W10"}' < merge-ko_predictions.txt > merge_ko.txt
+gawk 'NR>2{if ($2 > 0 && $3 == 0 ) print $1 " #ff0000 W10"}' < merge-ko_predictions.txt >> merge_ko.txt
+gawk 'NR>2{if ($2 == 0 && $3 > 0 ) print $1 " #0000ff W10"}' < merge-ko_predictions.txt >> merge_ko.txt
+```
+***
 ### 2.4. Pathways prediction
 
 PICRUSt can also collapse KOs to KEGG Pathways. Note that one KO can map to many KEGG Pathways so a simple mapping wouldn't work here. Instead, we use the PICRUSt script "categorize_by_function.py":
@@ -213,7 +250,7 @@ biom convert -i pathway_predictions.biom -o pathway_predictions.txt --to-tsv --h
 | Adipocytokine signaling pathway                                 | 6486     | 6300      | 7408     | 6562      | […] | 7082     | 7654     | 5580     | Organismal Systems; Endocrine System; Adipocytokine signaling pathway                                                  |
 | African trypanosomiasis                                         | 28       | 25        | 40       | 42        | […] | 9        | 22       | 9        | Human Diseases; Infectious Diseases; African trypanosomiasis                                                           |
 | Alanine, aspartate and glutamate metabolism                     | 94807    | 90632     | 103163   | 103640    | […] | 98339    | 104441   | 115040   | Metabolism; Amino Acid Metabolism; Alanine, aspartate and glutamate metabolism                                         |
-
+***
 ### 2.5. Pathways statistical analysis (STAMP)
 
 Once we have the Pathways associated with the genes (KOs) in our dataset we can try to test if there is any differences in the pathways among the sample groups. To do that we are going to use [STAMP](https://beikolab.cs.dal.ca/software/STAMP), which is a dedicated program for this kind of data (metagenomics).
