@@ -355,7 +355,7 @@ metagenome_contributions.py -i otus_corrected.biom -o metagenome_contributions.t
 To explore the result data we can make uso of R and ggplot:
 
 ```{r}
-install.package("ggplots2")
+install.packages("ggplot2")
 library(ggplot2)
 setwd("~/media/DiscoLocal/BioInformatica/unit_5")
 df <- read.table(file = 'metagenome_contributions.txt', sep = '\t', header = TRUE)
