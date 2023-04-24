@@ -69,7 +69,11 @@ conda activate ngs
 mkdir -p /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
 
 # Download files
-sp
+gdown https://drive.google.com/uc?id=1ESOz89_ULHgsy5IJn2oSnaOkMh5sq5mH
+gdown https://drive.google.com/uc?id=1Kq3oRWjoIUAn2D01QuHPRFO8X7Us0sE6
+gdown https://drive.google.com/uc?id=1T0NJlHsK4A2cAdiFLCQwlGzNCeULiRST
+gdown https://drive.google.com/uc?id=1ZyP6Q6uQvZ3inAdFFVU8HNrIT1AxoHjC
+
 
 # Check MD5 hashes before moving to the picrust folder
 cp *precalculated.tab.gz /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
@@ -355,7 +359,7 @@ metagenome_contributions.py -i otus_corrected.biom -o metagenome_contributions.t
 To explore the result data we can make uso of R and ggplot:
 
 ```{r}
-install.packages("ggplot2")
+install.package("ggplots2")
 library(ggplot2)
 setwd("~/media/DiscoLocal/BioInformatica/unit_5")
 df <- read.table(file = 'metagenome_contributions.txt', sep = '\t', header = TRUE)
