@@ -13,11 +13,6 @@ fi
 r1=$1
 r2=$2
 output=$3
-# minq=$3
-# minl=$4
-# out1=`echo ${1} | awk -F '.' '{print $1}'`
-# out2=`echo ${2} | awk -F '.' '{print $1}'`
-
 
 if [ ! -d ./human_cds_index ]
 then
