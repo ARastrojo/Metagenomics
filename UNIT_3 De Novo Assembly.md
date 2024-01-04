@@ -1,8 +1,6 @@
-# *De Novo* Assembly tutorial
+# _De Novo_ Assembly tutorial
 
-**Before starting...**
-
-We are going to try not to used Virtual Machines. To do so, I have installed Miniconda3 in the folder **/media/DiscoLocal/BioInformatica/**, which is the only folder where the changes you make are permanent in the local machines. To activate this conda installations we must go to that folder and initialize as follows:
+<!--We are going to try not to used Virtual Machines. To do so, I have installed Miniconda3 in the folder **/media/DiscoLocal/BioInformatica/**, which is the only folder where the changes you make are permanent in the local machines. To activate this conda installations we must go to that folder and initialize as follows:
 
 ```bash
 cd /media/DiscoLocal/BioInformatica/
@@ -29,14 +27,17 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 ```
+-->
+**Conda environments**
 
-Now, we are going to create a new conda environment where we are going to install some necessary programs:
+Before starting to work with the data we are going to create a new _conda environment_ where we are going to install the necessary programs. Conda environments are virtual spaces where we can install whatever we need for a project without modifying the base installation. This is very usefull when some of the programs we want to use require different libraries versions that cannot be install at the same time. Additionally, if something goes wrong, we can remove the environment an start over. To create a conda environment we use the following command:
 
 ```bash
-conda create -n ngs python=3.9
+conda create -n ngs python=3.11 -y
+# We can use -y option to let conda install all required libraries without asking for confirmation.
 ```
 
-> We use python 3.9 because is the version were all the programs seem to work well (if something works, do not touch!!!)
+> We use python 3.11 because is the version were all the programs seem to work well (if something works, do not touch!!!). We can also create an environment without any python version, and let conda install the best python version when we install the first program that require python. 
 
 [*Gdown*](https://pypi.org/project/gdown/)
 
@@ -48,25 +49,39 @@ pip install gdown
 conda deactivate
 ```
 
-> If local conda installation does not work or something goes wrong, we can make used of virtual machine (the one that Miguel showed you in previous classes or a small one I have prepared ([Download link](https://drive.google.com/uc?id=1jz037M7kw0yyNs0em3ZsXrKkpq8gw2uG), md5=eb53666bfe7510827ab20b4e8324294e and [virtual machine creation commands](https://drive.google.com/file/d/1-Hp1YrTKkU5Uyxh3bC1fci7dAfL-UIVj/view?usp=sharing))
+**Remove conda environments**
 
+To remove an environment we can used the following conda command:
+
+```bash
+conda env remove --name env_name
+# Replace env_name by the name of the desired environment
+```
+
+Or by simple removing the environment folder inside _miniconda3_ directory:
+```bash
+rm -fr /home/metag/miniconda3/envs/env_name
+# Replace /home/metag/ by the correct path in you system
+# Replace env_name by the name of the desired environment
+```
+
+<!-- > If local conda installation does not work or something goes wrong, we can make used of virtual machine (the one that Miguel showed you in previous classes or a small one I have prepared ([Download link](https://drive.google.com/uc?id=1jz037M7kw0yyNs0em3ZsXrKkpq8gw2uG), md5=eb53666bfe7510827ab20b4e8324294e and [virtual machine creation commands](https://drive.google.com/file/d/1-Hp1YrTKkU5Uyxh3bC1fci7dAfL-UIVj/view?usp=sharing))
+-->
 * * *
 
 ## *De Novo* Assembly
 
-To learn the basis of *de novo* assembly we are going to use a small dataset to reduce computational requirements and to speed up the process. Specifically, we are going to use a subset (50k paired reads) from the reads obtained in *Ectromelia virus* genome sequencing. Therefore, in our example dataset we should expect a single genome, and hopefully a single contig/scaffold.
+To learn the basis of *de novo* assembly we will use a small dataset to reduce computational requirements and to speed up the process. Specifically, we are going to use a subset (50k paired reads) from the reads obtained in *Ectromelia virus* genome sequencing. Therefore, in our example dataset we should expect a single genome, and hopefully a single contig/scaffold.
 
-## 1\. Pre-processing
+## 1. Pre-processing
 
 ### 1.1. Download dataset
 
 > Activate *ngs* environment (conda activate ngs)
-> We have to work always under /media/DiscoLocal/BioInformatica/
 
 Download ECTV reads:
-
 ```bash
-cd /media/DiscoLocal/BioInformatica/
+cd /home/metag/Documents/
 mkdir unit_3
 cd unit_3
 gdown https://drive.google.com/uc?id=1gtnWLZWdZxn6j-oDvro2sDw3YHPZI2LM
@@ -99,7 +114,7 @@ md5sum *.fastq
 
 > In Mac system *md5sum* command is call simple *md5*
 
-Finally, just inspect the hashes by eye to check for any change. Usually, if files were broken for whatever reason, the md5 hash is completely different and just looking at the last 5-6 digits is going to show us if something went wrong.
+Finally, just inspect the hashes by eye to check for any change. Usually, if files are broken for whatever reason, the md5 hash is completely different and just looking at the last 5-6 digits is going to show us if something goes wrong.
 
 ### 1.3 Counting the number of reads
 
@@ -114,10 +129,10 @@ GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
 !''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
 ```
 
-- First line, is the sequence name beginning with "@". The name of the sequence usually contains information of the instrument, the number of run, the lane, etc.
-- Second line is the sequence itself.
-- Third line is for comments (usually empty)
-- Last line is the quality of the sequence code using [Phred scale](https://en.wikipedia.org/wiki/Phred_quality_score) (currently most sequencing platforms used Phred+33 scale)
+- First line, is the **sequence name** beginning with "@". The name of the sequence usually contains information of the instrument, the number of run, the lane, etc.  
+- Second line is the **sequence** itself.  
+- Third line is for **comments** (usually empty).  
+- Last line is the **quality** of the sequence code using [Phred scale](https://en.wikipedia.org/wiki/Phred_quality_score) (currently most sequencing platforms used Phred+33 scale).  
 
 So, the easy way of counting the number of reads in a file is using *wc* linux command (*word count*):
 
@@ -142,6 +157,8 @@ reads=`wc -l ${file} | awk '{print $1/4}'`
 echo $file $reads
 done
 ```
+
+> Why don't we use grep? ...
 
 ### 1.4. Check sequence quality with FastQC
 
@@ -170,6 +187,13 @@ Open the html files to get information about the number of sequences, the length
 **R2 quality plot**
 
 ![r2_quality](https://user-images.githubusercontent.com/13121779/162767078-d14e19d6-40a9-498a-828d-f3b65ebad31e.png)
+
+*Illumina tiles*
+
+Tiles are small imaging areas on the flow cell defined as the field of view by the camera (see more details [here](https://support-docs.illumina.com/IN/NextSeq_550-500/Content/IN/NextSeq/FlowCell_Tiles_fNS.htm)). 
+
+![tiles](https://github.com/ARastrojo/Metagenomics/blob/a55b02eba1b8c472341e62c3b62e66faa655b5ee/images/illumina_tile.png)
+
 
 ### 1.5. Quality filtering of raw reads
 
@@ -232,64 +256,84 @@ General quality has improve specially at the end of the reads where quality was 
 
 phiX174 was the first genome to be sequence ([Sanger, F., Air, G., Barrell, B. et al. Nucleotide sequence of bacteriophage φX174 DNA. Nature 265, 687–695 (1977)](https://doi.org/10.1038/265687a0)). Since that, the viral genome is included as an spike by Illumina kits to control quality of the sequencing process and some contaminating reads could be left.
 
-In the other hand, human contamination is also very frequent, as humans prepare and manipulate the samples before being sequenced. In some cases, the genome of other organisms, such as mouse or monkey, should be used instead of human, depending on the experimental set. Imaging, for instance, that we are sequencing the genome of a virus grown in VERO cells (derived from monkey kidney fibroblast). In that case we should remove all reads mapping to the monkey genome that could be present in our raw data as a contamination.
+In the other hand, human contamination is also very frequent, as humans prepare and manipulate the samples before being sequenced. In some cases, the genome of other organisms, such as mouse or monkey, should be used instead of human, depending on the experimental set. Imagine, for instance, that we are sequencing the genome of a virus grown in VERO cells (derived from monkey kidney fibroblast). In that case we should remove all reads mapping to the monkey genome that could be present in our raw data as a contamination.
 
 To perform short read alignment we are going to use [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml). There are other popular aligners such as [BWA](http://bio-bwa.sourceforge.net/), but Bowtie2 parameters are easy to understand and modify. Specially, as we are not really interested in aligned reads, those that mapped to the human or phiX174 genomes, by using Bowtie2 we have an option to extract not aligned reads easily. We can also extract unaligned reads from BWA alignment, but is not an straight way.
 
-Before preforming the alignment, Bowtie2 requires the preparation of an index containing the reference sequences to align against, in our case the human and phiX174 genomes. We can perform this decontamination process in two steps, by first removing human reads and then phiX174 reads. Pre-built human genome indexes can be downloaded from [Bowtie2 webpage](https://benlangmead.github.io/aws-indexes/bowtie). However, as human genome is too big to run the alignment is a short time, we are going to use a smaller human reference sequence containing all coding sequence instead of the whole genome sequence (for a correct decontamination the whole human genome, or the appropriate organism, should be used).
+Before preforming the alignment, Bowtie2 requires the preparation of an index containing the reference sequences to align against, in our case the human and phiX174 genomes. We can perform this decontamination process in two steps, by first removing human reads and then phiX174 reads. Pre-built human genome indexes can be downloaded from [Bowtie2 webpage](https://benlangmead.github.io/aws-indexes/bowtie). However, as human genome is too big to run the alignment in a short time, we are going to use a smaller human reference sequence containing all coding sequence instead of the whole genome sequence (for a correct decontamination the whole human genome, or the appropriate organism, should be used).
 
 - **Installing Bowtie2**
 
 Let's try:
 
 ```bash
-conda install -c bioconda bowtie2 -y
+conda install -c bioconda -c default -c conda-forge bowtie2 -y
 ```
 
 The installation fails in the virtual machine:
 
 ```bash
-Collecting package metadata (current_repodata.json): done
-Solving environment: failed with initial frozen solve. Retrying with flexible solve.
-Solving environment: failed with repodata from current_repodata.json, will retry with next repodata source.
+Channels:
+ - bioconda
+ - conda-forge
+ - defaults
+Platform: linux-64
 Collecting package metadata (repodata.json): done
-Solving environment: failed with initial frozen solve. Retrying with flexible solve.
-Solving environment: \ 
-Found conflicts! Looking for incompatible packages.
-This can take several minutes.  Press CTRL-C to abort.
-failed                                                       
+Solving environment: - warning  libmamba Added empty dependency for problem type SOLVER_RULE_UPDATE
+failed
 
-UnsatisfiableError: The following specifications were found to be incompatible with each other:
+LibMambaUnsatisfiableError: Encountered problems while solving:
+  - package bowtie2-2.2.1-py27h2bce143_4 requires python >=2.7,<2.8.0a0, but none of the providers can be installed
 
-Output in format: Requested package -> Available versionsThe following specifications were found to be incompatible with your system:
+Could not solve for environment specs
+The following packages are incompatible
+\u251c\u2500 bowtie2 is installable with the potential options
+\u2502  \u251c\u2500 bowtie2 [2.2.1|2.2.4|...|2.3.5.1] would require
+\u2502  \u2502  \u2514\u2500 python [2.7* |>=2.7,<2.8.0a0 ], which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.1|2.2.4|...|2.3.4.3] would require
+\u2502  \u2502  \u2514\u2500 python [3.5* |>=3.5,<3.6.0a0 ], which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.1|2.2.4|...|2.5.1] would require
+\u2502  \u2502  \u2514\u2500 python >=3.6,<3.7.0a0 , which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.1|2.2.4|...|2.5.1] would require
+\u2502  \u2502  \u2514\u2500 python >=3.7,<3.8.0a0 , which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.1|2.2.4|...|2.5.2] would require
+\u2502  \u2502  \u2514\u2500 python >=3.8,<3.9.0a0 , which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.1|2.2.4|...|2.5.2] would require
+\u2502  \u2502  \u2514\u2500 python >=3.9,<3.10.0a0 , which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.4|2.2.5|...|2.3.0] would require
+\u2502  \u2502  \u2514\u2500 python 3.4* , which can be installed;
+\u2502  \u251c\u2500 bowtie2 [2.2.4|2.2.5|...|2.3.4.1] would require
+\u2502  \u2502  \u2514\u2500 python 3.6* , which can be installed;
+\u2502  \u2514\u2500 bowtie2 [2.4.5|2.5.0|2.5.1|2.5.2] would require
+\u2502     \u2514\u2500 python >=3.10,<3.11.0a0 , which can be installed;
+\u2514\u2500 pin-1 is not installable because it requires
+   \u2514\u2500 python 3.11.* , which conflicts with any installable versions previously reported.
 
-  - feature:/linux-64::__glibc==2.31=0
-  - bowtie2 -> libgcc-ng[version='>=10.3.0'] -> __glibc[version='>=2.17']
-  - python=3.9 -> libgcc-ng[version='>=11.2.0'] -> __glibc[version='>=2.17']
+Pins seem to be involved in the conflict. Currently pinned specs:
+ - python 3.11.* (labeled as 'pin-1')
 
-Your installed version is: 2.31
 ```
 
 As mentioned before, I am not a computer expert, and I do not want to spend my time fighting against computing problems... So what can we do? Googling the error and try by copy/paste the possible solutions, which sometimes is the better solution. But here, we are going to install _Bowtie2_ by ourself:
 
 ```bash
 # Create a folder to contain software and download
-mkdir -p /media/DiscoLocal/BioInformatica/software/
-cd /media/DiscoLocal/BioInformatica/software
-wget https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.5.1/bowtie2-2.5.1-linux-x86_64.zip
-unzip bowtie2-2.5.1-linux-x86_64.zip
+mkdir -p /home/metag/software/
+cd /home/metag/software/
+wget https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.5.2/bowtie2-2.5.2-linux-x86_64.zip
+unzip bowtie2-2.5.2-linux-x86_64.zip
 
 # Create a bin folder to make symbolic links of the required binaries
-mkdir -p /media/DiscoLocal/BioInformatica/bin
-cd /media/DiscoLocal/BioInformatica/bin
-ln -s /media/DiscoLocal/BioInformatica/software/bowtie2-2.5.1-linux-x86_64/bowtie2 .
-ln -s /media/DiscoLocal/BioInformatica/software/bowtie2-2.5.1-linux-x86_64/bowtie2-build .
+mkdir -p /home/metag/bin
+cd /home/metag/bin
+ln -s /home/metag/software/bowtie2-2.5.2-linux-x86_64/bowtie2 .
+ln -s /home/metag/software/bowtie2-2.5.2-linux-x86_64/bowtie2-build .
 
-# Now we have to tell the shell were to find the binaries by editing /media/DiscoLocal/BioInformatica/profile using _vim_ or _nano_ and adding the next line:
-export PATH=/media/DiscoLocal/BioInformatica/bin/:$PATH
+# Now we have to tell the shell were to find the binaries by editing /home/metag/.bash_profile using _vim_ or _nano_ and adding the next line:
+export PATH=/home/metag/bin/:$PATH
 
 # Finally, we need to initialize the profile
-source /media/DiscoLocal/BioInformatica/profile
+source /home/metag/.bash_profile
 ```
 
 - **Decontamination human reads**
@@ -304,22 +348,25 @@ bowtie2-build GCF_000001405.40_GRCh38.p14_cds_from_genomic.fna.gz human_cds
 
 > **Creating human_cds index will take ~1 hour...**
 
-So, to reduce the time I have created the index for you:
-```bash
-# Downloading index
-gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
-```
+So, to reduce the time I have created the index for you which is located in /home/metag/Documents/data/human_cds_index/. The index is formed by several files, all of then ended with _.bt2_ extension. To avoid moving or copying files we will create symbolic links in our folder. To do so, we use a loop:
 
-> There is a file human_cds.md5 containing the md5 hashes of all index files.
+
+```bash
+cd /home/metag/Documents/unit_3
+for f in /home/metag/Documents/data/human_cds_index/*.bt2;
+do
+ln -s $f .
+done
+```
 
 - **Aligning reads against human cds**
 
 ```bash
-bowtie2 -x human_cds_index/human_cds -1 ECTV_R1_qf_paired.fastq -2 ECTV_R2_qf_paired.fastq --un-conc ECTV_qf_paired_nohuman_R%.fastq -S tmp.sam
+bowtie2 -x human_cds -1 ECTV_R1_qf_paired.fastq -2 ECTV_R2_qf_paired.fastq --un-conc ECTV_qf_paired_nohuman_R%.fastq -S tmp.sam
 ```
 
 > *tmp.sam* contains the aligned reads that we are not interested in, so we can remove this file.
-> ECTV_qf_paired_nohuman_R%.fq.gz contains unaligned reads (the % is replaced by 1 and 2 accordingly to the pairer reads)
+> ECTV_qf_paired_nohuman_R%.fq.gz contains unaligned reads (the % is replaced by 1 and 2 accordingly to the read pair)
 
 Now we can count the clean reads:
 
@@ -359,7 +406,7 @@ Another important option is *-k* flag with which we can define the kmer length t
 
 ### 2.1. Runing SPAdes
 
-There is a conda environment called _spades_ with SPAdes program already installed. But, if you do not want to change between environments, we can easily install SPAdes:
+We can easily install SPAdes:
 
 ```bash
 conda install -c bioconda spades -y
@@ -375,9 +422,6 @@ spades.py --careful -t 2 -1 ECTV_qf_paired_nohuman_noPhiX_R1.fastq -2 ECTV_qf_pa
 ```bash
 spades.py --isolate -t 2 -1 ECTV_qf_paired_nohuman_noPhiX_R1.fastq -2 ECTV_qf_paired_nohuman_noPhiX_R2.fastq -o ECTV_isolate
 ```
-
-> _isolate_ assembly fails!!!!! What can we do? 
-> Hint: to uninstall a package we use _conda remove package_name_
 
 ### 2.2. Check the number of contigs and scaffolds:
 
@@ -453,12 +497,8 @@ python contigstats.py ECTV_*/*.fasta
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | ECTV_careful/contigs.fasta | 8   | 90  | 61911 | 24644 | 61252 | 197148 | 0   |
 | ECTV_careful/scaffolds.fasta | 7   | 90  | 92471 | 28165 | 61252 | 197158 | 10  |
-| ECTV_default/contigs.fasta | 8   | 90  | 61911 | 24644 | 61252 | 197148 | 0   |
-| ECTV_default/scaffolds.fasta | 7   | 90  | 92471 | 28165 | 61252 | 197158 | 10  |
 | ECTV_isolate/contigs.fasta | 11  | 90  | 61911 | 18006 | 30550 | 198061 | 0   |
 | ECTV_isolate/scaffolds.fasta | 9   | 90  | 92471 | 22009 | 36053 | 198081 | 20  |
-| ECTV_sc/contigs.fasta | 12  | 79  | 92446 | 16567 | 61624 | 198808 | 0   |
-| ECTV_sc/scaffolds.fasta | 9   | 79  | 92877 | 22102 | 75358 | 198919 | 111 |
 
 > NOTE: I have remove *before_rr.fasta* data from the table for simplicity.
 
@@ -470,52 +510,20 @@ A better and more complete way of making assemblies comparison is by using dedic
 
 - **Installing Quast**
 
+If we try to install Quast  in our _ngs_ environment it will fail because there are some incompatible libraries with python 3.11. Therefore we must create a new environmet for quast.
 ```bash
+# conda deactivate # To exist from ngs environment
+conda create -n quast # we do no specify any python version
+conda activate quast
 conda install -c bioconda quast -y
-Collecting package metadata (current_repodata.json): done
-Solving environment: failed with initial frozen solve. Retrying with flexible solve.
-Solving environment: failed with repodata from current_repodata.json, will retry with next repodata source.
-Collecting package metadata (repodata.json): done
-Solving environment: failed with initial frozen solve. Retrying with flexible solve.
-Solving environment: \ 
-Found conflicts! Looking for incompatible packages.
-This can take several minutes.  Press CTRL-C to abort.
-failed                                                                                                                                    \  
-
-UnsatisfiableError: The following specifications were found to be incompatible with each other:
-
-Output in format: Requested package -> Available versionsThe following specifications were found to be incompatible with your system:
-
-  - feature:/linux-64::__glibc==2.31=0
-  - feature:|@/linux-64::__glibc==2.31=0
-  - quast -> libgcc-ng[version='>=10.3.0'] -> __glibc[version='>=2.17']
-
-Your installed version is: 2.31
-
-```
-
-> Fails again!!!! Why?
-
-```bash
-# Download and install
-cd /media/DiscoLocal/BioInformatica/software/
-wget https://sourceforge.net/projects/quast/files/quast-5.2.0.tar.gz
-tar -xzf quast-5.2.0.tar.gz
-cd quast-5.2.0
-python setup.py install
-
-# Link binaries
-ln -s media/DiscoLocal/BioInformatica/software/quast-5.0.2/quast.py quast
-/media/DiscoLocal/BioInformatica/software/quast-5.2.0/build/scripts-3.10/quast.py /media/DiscoLocal/BioInformatica/software/bin/
-source /media/DiscoLocal/BioInformatica/software/profile
 ```
 
 Now that we have QUAST, we must have all contigs/scaffolds from the different assemblies in the same folder, but instead of copying the data, to reduce redundancy and save a little bit of disk space, we are going to make use of symbolic links.
 
-> NOTE: saving a disk space is irrelevant in this case, but when you are working in a real metagenomic or other sequencing projects could be an important issue.
+> NOTE: saving a disk space is irrelevant in this case, but when you are working in a real metagenomic or other sequencing projects it could be an important issue.
 
 ```bash
-cd /media/DiscoLocal/BioInformatica/unit_3/
+cd /home/metag/Documents/unit_3/
 mkdir quast
 ln -rs ./ECTV_careful/contigs.fasta ./quast/contigs_careful.fasta 
 ln -rs ./ECTV_careful/scaffolds.fasta ./quast/scaffolds_careful.fasta 
@@ -529,21 +537,12 @@ Additionally, in this single genome sequencing example we have a reference genom
 
 ```bash
 cd quast
-gdown https://drive.google.com/uc?id=1si94FUXuiFARsTGirDQH1fMivLGVJCW8
+wget ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/841/905/GCF_000841905.1_ViralProj14211/GCF_000841905.1_ViralProj14211_genomic.fna.gz
+gunzip GCF_000841905.1_ViralProj14211_genomic.fna.gz 
+mv GCF_000841905.1_ViralProj14211_genomic.fna ECTV_reference_genome.fasta
 quast.py contigs* scaffolds* -R ECTV_reference_genome.fasta
 ```
 
-<!--
-> **IMPORTANT**: In my VM, there was an error when running QUAST  v5.0.2 (*"AttributeError: module 'cgi' has no attribute 'escape'"*). So I did what a good bioinformaticians must do... Copy and paste the error in google, :). To solver the problem we should modify one of the QUAST script by replacing the use of *cgi* library for the *html* one. To do that follow the next commands:
-
-```bash
-# Open a new terminal window/tab
-cd /home/bgm/software/quast-5.0.2/quast_libs/site_packages/jsontemplate
-# Always make a copy of the file you are going to modify
-cp jsontemplate.py jsontemplate_original.py
-sed s/cgi/html/g jsontemplate_original.py > jsontemplate.py
-```
--->
 Take a look to the report.pdf/report.html (also report.txt):
 
 ![Cummulative length](https://user-images.githubusercontent.com/13121779/163284268-3b69abd3-dfe4-4ffc-9350-beb36f96f415.png)
@@ -561,12 +560,14 @@ To speed up the process, and to show you how to _automate_ it, in this case we a
 ```bash
 #!/bin/bash
 
+conda activate ngs
+
+cd /home/metag/Documents/
 mkdir unit_3b
 cd unit_3b
 
-
-# Download reads
-gdown https://drive.google.com/uc?id=1QModYfordyNU0LjnE27-plr-QEftbSi5
+# Link reads
+ln -s /home/metag/data/viromes/virome_1.tar.gz .
 tar -xzf virome_1.tar.gz
 
 # Raw reads quality  assessment
@@ -584,17 +585,11 @@ trimmomatic PE -phred33 virome_1_R1.fastq.gz virome_1_R2.fastq.gz \
 fastqc virome_1_R1_qf_paired.fq.gz -o quality
 fastqc virome_1_R2_qf_paired.fq.gz -o quality
 
-
 # Decontaminating human reads
-gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
-bowtie2 -x ./human_cds_index/human_cds -1 virome_1_R1_qf_paired.fq.gz -2 virome_1_R2_qf_paired.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_R%.fq.gz -S tmp.sam
+bowtie2 -x ../unit_3/human_cds -1 virome_1_R1_qf_paired.fq.gz -2 virome_1_R2_qf_paired.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_R%.fq.gz -S tmp.sam
 
 # Decontaminating PhiX174 reads
-wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Sinsheimervirus_phiX174/latest_assembly_versions/GCF_000819615.1_ViralProj14015/GCF_000819615.1_ViralProj14015_genomic.fna.gz
-gunzip GCF_000819615.1_ViralProj14015_genomic.fna.gz
-bowtie2-build GCF_000819615.1_ViralProj14015_genomic.fna phix
-
-bowtie2 -x phix -1 virome_1_qf_paired_nonHuman_R1.fq.gz -2 virome_1_qf_paired_nonHuman_R2.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_nonPhix_R%.fq.gz -S tmp.sam
+bowtie2 -x ../unit_3/phix -1 virome_1_qf_paired_nonHuman_R1.fq.gz -2 virome_1_qf_paired_nonHuman_R2.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_nonPhix_R%.fq.gz -S tmp.sam
 
 # Assembly
 spades.py -t 4 --careful -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_careful
@@ -602,6 +597,8 @@ spades.py -t 4 --meta    -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 viro
 spades.py -t 4 --sc      -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_sc
 
 # Assembly analysis
+conda deactivate
+conda activate quast
 mkdir quast
 ln -rs ./virome_1_careful/contigs.fasta   ./quast/virome_1_contigs_careful.fasta
 ln -rs ./virome_1_careful/scaffolds.fasta ./quast/virome_1_scaffolds_careful.fasta
@@ -612,10 +609,11 @@ ln -rs ./virome_1_sc/scaffolds.fasta      ./quast/virome_1_scaffolds_sc.fasta
 ln -rs ./virome_1_genomes.fasta          ./quast/virome_1_genomes.fasta
 cd quast
 quast.py virome_1_contigs_careful.fasta virome_1_contigs_meta.fasta virome_1_contigs_sc.fasta virome_1_scaffolds_careful.fasta virome_1_scaffolds_meta.fasta virome_1_scaffolds_sc.fasta -R virome_1_genomes.fasta
+conda deactivate
 
 ```
 
-Create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script or in /media/DiscoLocal/BioInformatica/bin/). Then, we have to give execution permision to the file:
+Create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script or in /home/metag/bin). Then, we have to give execution permision to the file:
 
 ```bash
 chmod 755 virome_script.sh 
@@ -625,8 +623,8 @@ chmod +x virome_script.sh
 
 Now, run the script:
 ```bash
-cd /media/DiscoLocal/BioInformatica/
-virome_script.sh
+cd /home/metag/Documents/
+./virome_script.sh
 ```
 
 > How can we improve the script to used with a different input file?
@@ -635,7 +633,7 @@ virome_script.sh
 
 ## 5. Homework
 
-Repeat all the steps with a viral metagenome from [here](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing).   
+Repeat all the steps with a viral metagenome from /home/metag/Documents/data/viromes/.    
 
 Compare different *de novo assemblies* options (try --meta) or different *kmer* values or different quality filtering parameters.  
 
@@ -645,10 +643,8 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 
 > NOTE: In the quality filtering step, modify the MINLEN argument considering the original read length. Consider that reads with a minimum of 50% of the average original size are ok for subsequent analyses.
 
-> IMPORTANT: SPAdes uses a lot of RAM memory for the assembly and our the virtual machines only have 4 Gb of RAM. To avoid SPAdes to crash while trying different assemblies to should reduce de number on threads used by de assembler (-t 2) and the available amount of memory that SPAdes can used (-m 4). However, using the local SPAdes instalation (16GB of RAM and 4 cores/threads) we do not need to limit the memory. 
-
 ```bash
 spades.py -t 2 -m 4 -1 R1.fastq -2 R2.fastq -o output_folder
 ```
 
-Submit this document as a task to Moodle/Unit3 before 20th May.
+Submit this document as a task to Moodle/Unit3 before XXth of XX.
