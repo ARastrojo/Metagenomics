@@ -560,14 +560,11 @@ To speed up the process, and to show you how to _automate_ it, in this case we a
 ```bash
 #!/bin/bash
 
+source ~/.bash_profile
 conda activate ngs
 
-cd /home/metag/Documents/
-mkdir unit_3b
-cd unit_3b
-
 # Link reads
-ln -s /home/metag/data/viromes/virome_1.tar.gz .
+ln -s /home/metag/Documents/data/viromas/virome_1.tar.gz .
 tar -xzf virome_1.tar.gz
 
 # Raw reads quality  assessment
@@ -613,9 +610,14 @@ conda deactivate
 
 ```
 
-Create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script or in /home/metag/bin). Then, we have to give execution permision to the file:
+Create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script). Then, we have to give execution permision to the file:
 
 ```bash
+cd /home/metag/Documents/
+mkdir unit_3b
+cd unit_3b
+
+# Create virome_script.sh
 chmod 755 virome_script.sh 
 # or 
 chmod +x virome_script.sh
@@ -623,7 +625,7 @@ chmod +x virome_script.sh
 
 Now, run the script:
 ```bash
-cd /home/metag/Documents/
+cd /home/metag/Documents/unit_3b
 ./virome_script.sh
 ```
 
