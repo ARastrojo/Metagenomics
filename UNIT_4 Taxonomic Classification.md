@@ -74,10 +74,10 @@ diamond blastx -d viralproteins.dmnd -q virome_1.fq -o virome_1_vs_viralprotein.
 # 152252 queries aligned.  
 ```
 
-However, although Diamond running time is not to high (~160k reads takes ~4 minutes ), MEGAN, the program we are going to use for parsing Diamond hits and assign taxonomy to the reads, uses a <u>huge amount of RAM memory</u> and with large dataset many times it gets blocked. To avoid this, we are going to take  a **random subsample** using [seqtk](https://github.com/lh3/seqtk):
+However, although Diamond running time is not to high (~160k reads takes ~4 minutes), MEGAN, the program we are going to use for parsing Diamond hits and assign taxonomy to the reads, uses a <u>huge amount of RAM memory</u> and with large dataset many times it gets blocked. To avoid this, we are going to take  a **random subsample** using [seqtk](https://github.com/lh3/seqtk):
 
 ```bash
-conda install -c bioconda seqtk
+conda install -c bioconda seqtk -y
 
 # Virome_1
 seqtk sample -s 123 virome_1_qf_R1.fq.gz 5000 > virome_1_10k.fq
@@ -148,8 +148,6 @@ conda install -c bioconda megan -y
 ```
 
 Additionally, we need to download the mapping file [megan-map-Feb2022-ue.db.zip](https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip) to provide taxonomic information of the database to MEGAN. 
-
-<!--https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022.db.zip-->
 
 ```bash
 wget https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip
