@@ -5,11 +5,11 @@
 - Create a folder and obtain reads:
 
 ```bash
-cd /media/DiscoLocal/BioInformatica/
+cd /home/metag/Documents/
 mkdir unit_4
 ```
 
-As example, we are going to used the reads of *virome_1* used in _Unit 3_. 
+As example, we are going to used the reads of *virome_1* used in _Unit 3b_. 
 As we have already perform quality filtering and decontamination we only need to copy/link reads files here:
 
 ```bash
@@ -22,16 +22,11 @@ ln -rs ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz ./virome_1_qf_R2.
 
 > _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create, it is better to use absolute paths in mac. 
 
-Addittionaly, we are going to download quality filtered reads from *virome_2* to compare taxonomic classification from both viromes:
+Addittionaly, we will used quality filtered reads from *virome_2* to compare taxonomic classification from both viromes:
 
 ```bash
-conda activate ngs
-gdown https://drive.google.com/uc?id=11xOf45e5aIIKLTc1pEKsUCHpYyC-84NF
-gdown https://drive.google.com/uc?id=1TuTyun2dlmUMvsF6N9LK6zAySI3xvqtx
-
-# MD5
-# 7c508583dbda80b948b5f88eb879ae16  virome_2_qf_R1.fq.gz
-# d1894eec561128bc29e4a3050e0eafaa  virome_2_qf_R2.fq.gz
+ln -rs ../data/viromas/virome_2/virome_2_qf_R1.fq.gz .
+ln -rs ../data/viromas/virome_2/virome_2_qf_R2.fq.gz .
 ```
 
 > Take a look to scripts _trimo.sh_ and _decontaminate.sh_ under script folder in github. 
