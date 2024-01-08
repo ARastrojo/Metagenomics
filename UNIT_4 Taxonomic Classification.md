@@ -147,14 +147,7 @@ conda activate ngs
 conda install -c bioconda megan -y
 ```
 
-Additionally, we need to download the mapping file [megan-map-Feb2022-ue.db.zip](https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip) to provide taxonomic information of the database to MEGAN. 
-
-```bash
-wget https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip
-
-# Unzip mapping file (this will take a while...)
-unzip megan-map-Feb2022-ue.db.zip
-```
+Additionally, we need to download the mapping file from [MEGAN webpage](https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/algorithms-in-bioinformatics/software/megan6/) to provide taxonomic information. However, the mapping file is ~10Gb and it will take too long to download. To solve this issue, we have modify the mapping file to remove all non-viral proteins references, reducing file size and making MEGAN processing lighter. This reduce mapping file can be found in _/home/metag/Documents/data/megan-map-Feb2022-ue-viral.db_. 
 
 To run MEGAN write MEGAN a in terminal window (from _ngs_ environment).
 
@@ -170,13 +163,13 @@ Choose the <u>BlastTab format</u> and the <u>Blastx mode</u>.
 
 Load also the original reads (in fastq format) used for the Blastx (sometimes MEGAN detect automatically the fastq read file from the folder).
 
-Click on Next and Load the Accession mapping file (unzipped). 
+Click on Next and Load the Accession mapping file (_/home/metag/Documents/data/megan-map-Feb2022-ue-viral.db_). 
 
 ![MappingFile](https://github.com/ARastrojo/Metagenomics/blob/9c692607b39e7a8cbfd7b839e261d74c67034cb9/images/megan_mapping_file.png)
 
 Then click on “Apply” (and wait.....)
 
-> Although we have reduce the number of input reads to dicrease memory consumption, in the virtual machine (4 Gb of RAM) the analysis can get blocked or sometimes the program suddenly gets close...
+> Although we have reduce the number of input reads and the mappings file size to dicrease memory consumption, Megan is still a litle bit slow...
 
 **Results: Family level and with the number of reads**
 
@@ -187,10 +180,8 @@ Once you have the graphical overview of the taxomomic composition of the reads f
 2. Expand or collapse the tree or change the tree format
 3. In the Tree tab, choose “Show Number of Summarized”
 4. We can copy data by clicking on Options/List Summary, paste de data in LibreOffice or Excel using “:” to divide data in columns.
-5. Check the alignments from a specific taxon by clicking on that with the right
-mouse button. Select “Inspect” option.
+5. Check the alignments from a specific taxon by clicking on that with the right mouse button. Select “Inspect” option.
 6. We can change LCA parameters in Options and increase the minimal score to 60 and reduce the max e-value allow to 10<sup>-10</sup> and the min complexity to 0.5 in order to reduce false positive alignments.
-
 
 > MEGAN results are stored in a file called *virome_1_10k.rma6* created in the same folder than input files.
 
@@ -230,36 +221,30 @@ conda install -c bioconda kraken2
 conda deactivate
 ```
 
-As with alignment-based programs, here we also have to prepare an adequate database. It is possible to create a custom database for Kraken2 ([Kraken2 manual](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown)). However, the developers of Kraken2 have already created several useful databases and we are going to download the pre-built viral database [Pre-built Databases](https://benlangmead.github.io/aws-indexes/k2):
-
-```bash
-# Download viral database
-wget https://genome-idx.s3.amazonaws.com/kraken/k2_viral_20221209.tar.gz
-mkdir k2_viral_20221209
-tar -xzf k2_viral_20221209.tar.gz -C k2_viral_20221209
-````
+As with alignment-based programs, here we also have to prepare an adequate database. It is possible to create a custom database for Kraken2 ([Kraken2 manual](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown)). However, the developers of Kraken2 have already created several useful [databases](https://benlangmead.github.io/aws-indexes/k2), including a small one containing only viral sequences that we will use and that is already downloaded at _/home/metag/Documents/data/k2_viral/_. 
 
 - **Running Kraken2**
 
 ```bash
 # Virome 1
-kraken2 -db k2_viral_20221209 --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz --report virome_1_report.txt > virome_1_k2_output.txt 
+export db=/home/metag/Documents/data/
+kraken2 -db $db/k2_viral --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz --report virome_1_report.txt > virome_1_k2_output.txt 
 ````
 
 > Loading database information... done.  
-> 79965 sequences (39.54 Mbp) processed in **8.468s** (566.6 Kseq/m, 280.12 Mbp/m).  
->   78469 sequences classified (98.13%)  
->   1496 sequences unclassified (1.87%)  
+> 79965 sequences (39.54 Mbp) processed in **4.921s** (974.9 Kseq/m, 482.02 Mbp/m).  
+>  78481 sequences classified (98.14%)  
+>  1484 sequences unclassified (1.86%)   
 
 ```bash
 # Virome 2
-kraken2 -db k2_viral_20221209 --paired virome_2_qf_R1.fq.gz virome_2_qf_R2.fq.gz --report virome_2_report.txt > virome_2_k2_output.txt 
+kraken2 -db $db/k2_viral --paired virome_2_qf_R1.fq.gz virome_2_qf_R2.fq.gz --report virome_2_report.txt > virome_2_k2_output.txt 
 ```
 
 > Loading database information... done.  
-> 101345 sequences (60.42 Mbp) processed in **10.152s** (599.0 Kseq/m, 357.11 Mbp/m).  
->   96843 sequences classified (95.56%)  
->   4502 sequences unclassified (4.44%)  
+> 101345 sequences (60.42 Mbp) processed in **9.625s** (631.7 Kseq/m, 376.64 Mbp/m).  
+>   96786 sequences classified (95.50%)  
+>   4559 sequences unclassified (4.50%)  
 
 - **Kraken2 output format**
 
@@ -326,15 +311,16 @@ But, it is still difficult to interpert. The columns of the report are described
 Pavian can be used online, but a low memory limit. To use Pavian without memory limit with have to make use of the R package (open RStudio):
 
 ```R
-# Installing Pavian
-if (!require(remotes)) { install.packages("remotes") }
-remotes::install_github("fbreitwieser/pavian")
+# Installing Pavian (Already done)
+# if (!require(remotes)) { install.packages("remotes") }
+# remotes::install_github("fbreitwieser/pavian")
 
 # Run Pavian server
 options(shiny.maxRequestSize=500*1024^2) # Increase max memory available
 pavian::runApp(port=5000)
 ```
 
+<!--
 ```bash
 Manually installation of Pavian (compilling from source)
 
@@ -352,14 +338,14 @@ install.packages('ggplot2')
 install.packages('rhandsontable')
 
 # Download from source:
-cd /media/DiscoLocal/BioInformatica/
+cd /home/metag/Documents/data/
 gdown https://github.com/fbreitwieser/pavian/archive/refs/tags/v1.0.zip
 unzip v1.0.zip
 
 # R: install.packages("/media/DiscoLocal/BioInformatica/pavian-1.0", repos = NULL, type="source")
 
 ```
-
+-->
 
 
 
@@ -392,5 +378,5 @@ Follow the workflow of this tutorial for the taxonomic binning and comparison of
 
 Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.) and the most relevant results with the taxonomy assessment of the viromes and their comparison (use family level). Note that across with simulated virome files there is a file containing the viral genomes used for the simulation, their relative abundance and their taxonomy, therefore, the quality of the taxonomy binning can be assessed, at least qualitatively.
 
-Deadline: 20th May.
+Deadline: XXth of XX.
 
