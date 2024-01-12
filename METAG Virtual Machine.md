@@ -17,17 +17,10 @@ chmod +x Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
-**Miniconda activation (Virtual Machine)**
+**Miniconda activation**
 
-Create a file “.bash_profile” at home folder (/home/metag/) and add _init_ code on it by using _vim_ or _nano_:
+By default, after Miniconda installation introduce the following code automatically in _.bashrc_ file to start conda at the terminal startup. However, for an unknown reason, in Xubuntu this does not occur. So, to get conda initialized at _terminal_ startup we need to included the following code at the end of _.bashrc_: 
 
-```bash
-cd /home/metag # or simply _cd_
-touch .bash_profile
-vim .bash_profile
-```
-
-Copy the following code to  to .bash_profile file:
 ```
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -45,13 +38,7 @@ unset __conda_setup
 # <<< conda initialize <<<
 ```
 
-Then, we have to tell the _system_ to read .bash_profile at _terminal_ start up. To do so we have to add the following code at the end of _.bashrc_ file:
-
-```bash
-# Personal profile
-source ~/.bash_profile
-```
-Doing these 2 changes will start _conda_ when we open a _terminal_ window. 
+Then, restart _terminal_ window and conda should be initialized. 
 
 **Conda channels**
 
