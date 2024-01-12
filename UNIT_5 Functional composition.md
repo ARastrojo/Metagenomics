@@ -15,8 +15,7 @@ It uses an OTU table that has already been generated for use with PICRUSt (using
 ### 1.1. Create a new directory that will store all of the files created in this tutorial:
 
 ```bash
-cd /media/DiscoLocal/BioInformatica/
-source profile
+cd /home/metag/Documents/
 mkdir unit_5
 cd unit_5
 ```
@@ -24,10 +23,8 @@ cd unit_5
 ### 1.2. Download dataset and unzip:
 
 ```bash
-conda activate ngs
-gdown https://drive.google.com/uc?id=1oq3D23KBaJ5UhVh--eVL6fa50oIpGl0m
+ls -s /home/metag/Documents/data/picrust_example.zip .
 unzip picrust_example.zip
-conda deactivate ngs
 
 # MD5 (picrust_example.zip): a54f27f58d71091470d4c093af8f3e00 
 ``` 
@@ -47,59 +44,17 @@ In your working directory you should have an OTU table called "otus.biom" and a 
 | 1E-Aug16  | Healthy       | 3_Old     |
 | 1E-May23  | Healthy       | 3_Old     |
 
-### 1.3. Download pre-computed database files
-
-Precomputed files can be download manually from [PICRUSt webpage](https://picrust.github.io/picrust/picrust_precalculated_files.html). 
-Then, check MD5 hashes (see below) and move downloaded files to unit_5 folder.
-
-![imagen](https://user-images.githubusercontent.com/13121779/166954986-90a929c5-8c54-47ec-a870-345cb651fde1.png)
-
-or by using the PICRUSt script:
-
-```bash
-conda activate picrust
-download_picrust_files.py
-conda deactivate
-```
-
-or by using the following command:
-
-```bash
-conda activate ngs
-mkdir -p /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-
-# Download files
-gdown https://drive.google.com/uc?id=1ESOz89_ULHgsy5IJn2oSnaOkMh5sq5mH
-gdown https://drive.google.com/uc?id=1Kq3oRWjoIUAn2D01QuHPRFO8X7Us0sE6
-gdown https://drive.google.com/uc?id=1T0NJlHsK4A2cAdiFLCQwlGzNCeULiRST
-gdown https://drive.google.com/uc?id=1ZyP6Q6uQvZ3inAdFFVU8HNrIT1AxoHjC
-
-
-# Check MD5 hashes before moving to the picrust folder
-cp *precalculated.tab.gz /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data/
-
-conda deactivate
-```
-
-> In any case check your downloades files using MD5 hashes:
-
-| File | MD5 |
-| --- | --- |
-| 16S_13_5_precalculated.tab.gz | 2fb637cbf5b0898bbca15a94e9a08f1f |
-| cog_13_5_precalculated.tab.gz | 52fc0c2a627903cf3e270ccd5e5f8ed7 |
-| ko_13_5_precalculated.tab.gz | 8220d5b3f48af4a86c1542973a365500 |
-| rfam_13_5_precalculated.tab.gz | f2c9fed80369243806f8aa970b6e0182 |
 
 ## 2. Running PICRUSt predictions 
 
-PICRUSt environmnent should be active (if you did not do it before while downloading the database files)
+PICRUSt environmnent should be active:
 
 ```bash
 conda activate picrust
+# Database files were already downloaded. See software installation instructions. 
 ```
 
-
-### 2.1. Normalizr 16S copy number
+### 2.1. Normalize 16S copy number
 
 The first step is to correct the OTU table based on the predicted 16S copy number for each organism in the OTU table:
 
@@ -111,6 +66,7 @@ If you want to look at the before and after correction you can use the biom tool
 
 ```bash
 biom convert -i otus.biom -o otus.txt --to-tsv --header-key taxonomy
+biom convert -i otus_corrected.biom -o otus_corrected.txt --to-tsv --header-key taxonomy
 ```
 
 > otus.txt  
@@ -167,8 +123,8 @@ biom convert -i ko_predictions.biom -o ko_predictions.txt --to-tsv --header-key 
 To visualize our predicted genes in a graphical way we can make use of [iPATH3](https://pathways.embl.de/). To do that, we need the list of KOs represented in our dataset:
 
 ```bash
-# sudo apt-get gawk 
-# Less try yo compare functional genes from 2 samples (healthy vs sick)
+# sudo apt-get install gawk 
+# Less try yo compare functional genes from 2 samples (healthy mouse on column 2 vs sick mouse on column 11)
 gawk 'NR>2{if ($2 > 0 && $11 > 0 ) print $1 " #00ff00 W10"}' < ko_predictions.txt > ko.txt
 gawk 'NR>2{if ($2 > 0 && $11 == 0 ) print $1 " #ff0000 W10"}' < ko_predictions.txt >> ko.txt
 gawk 'NR>2{if ($2 == 0 && $11 > 0 ) print $1 " #0000ff W10"}' < ko_predictions.txt >> ko.txt
@@ -184,7 +140,7 @@ iPATH3 creates a map with all metabolic genes present in our dataset:
 
 ![imagen](https://github.com/ARastrojo/Metagenomics/blob/52bd877a788e693528c0c118924a5c3251858d59/images/ipath_map.png)
 
-We can repeat the analysis but changind the "map" to check for antibiotic biosynthesis genes in our dataset:
+We can repeat the analysis but changing the "map" to check for antibiotic biosynthesis genes in our dataset:
 
 ![imagen](https://user-images.githubusercontent.com/13121779/167130197-78d3a179-9f4b-45c5-a4ac-a7c09e5e545c.png)
 
@@ -200,13 +156,13 @@ These maps are interactive and we can explore our data in detail.
 
 ```bash
 conda deactivate
-conda activate qiime2
+conda activate qiime
 
 # import biom to artifact
 qiime tools import --input-path otus.biom --type 'FeatureTable[Frequency]' --input-format BIOMV100Format --output-path otus.qza
 
 # Group by disease status
-qiime feature-table group   --i-table otus.qza   --p-axis sample   --m-metadata-file map.tsv   --m-metadata-column Disease_state   --p-mode sum   --o-grouped-table otus-merged.qza
+qiime feature-table group  --i-table otus.qza   --p-axis sample   --m-metadata-file map.tsv   --m-metadata-column Disease_state   --p-mode sum   --o-grouped-table otus-merged.qza
 
 # export artifact to biom
 qiime tools export --input-path otus-merged.qza --output-path exported
@@ -233,6 +189,7 @@ gawk 'NR>2{if ($2 > 0 && $3 == 0 ) print $1 " #ff0000 W10"}' < merge-ko_predicti
 gawk 'NR>2{if ($2 == 0 && $3 > 0 ) print $1 " #0000ff W10"}' < merge-ko_predictions.txt >> merge_ko.txt
 ```
 ***
+
 ### 2.4. Pathways prediction
 
 PICRUSt can also collapse KOs to KEGG Pathways. Note that one KO can map to many KEGG Pathways so a simple mapping wouldn't work here. Instead, we use the PICRUSt script "categorize_by_function.py":
@@ -356,12 +313,12 @@ metagenome_contributions.py -i otus_corrected.biom -o metagenome_contributions.t
 | K00998 | 9Y-June1 | 193359  | 1                  | 1.33                 | 1.33                  | 0.0005                      | 0.0000                          | k__Bacteria |  p__Bacteroidetes   |  c__Bacteroidia      |  o__Bacteroidales      |  f__S24-7               |  g__                |  s__            |
 | K00998 | 9Y-June1 | 528756  | 1                  | 1.33                 | 1.33                  | 0.0005                      | 0.0000                          | k__Bacteria |  p__Bacteroidetes   |  c__Bacteroidia      |  o__Bacteroidales      |  f__S24-7               |  g__                |  s__            |
 
-To explore the result data we can make uso of R and ggplot:
+To explore the result data we can also make use of R and ggplots2:
 
 ```{r}
-install.package("ggplots2")
+# install.package("ggplots2")
 library(ggplot2)
-setwd("~/media/DiscoLocal/BioInformatica/unit_5")
+setwd("/home/metag/Documents/unit_5")
 df <- read.table(file = 'metagenome_contributions.txt', sep = '\t', header = TRUE)
 ggplot(aes(y = ContributionPercentOfSample, x = Gene, fill = Phylum), data = df) + geom_bar( stat="identity")
 ```

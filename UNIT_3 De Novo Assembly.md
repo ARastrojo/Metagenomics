@@ -1,33 +1,5 @@
 # _De Novo_ Assembly tutorial
 
-<!--We are going to try not to used Virtual Machines. To do so, I have installed Miniconda3 in the folder **/media/DiscoLocal/BioInformatica/**, which is the only folder where the changes you make are permanent in the local machines. To activate this conda installations we must go to that folder and initialize as follows:
-
-```bash
-cd /media/DiscoLocal/BioInformatica/
-source profile
-```
-
-```bash
-# Profile content
-# aliases
-alias l='ls -la'
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/media/DiscoLocal/BioInformatica/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/media/DiscoLocal/BioInformatica/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/media/DiscoLocal/BioInformatica/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/media/DiscoLocal/BioInformatica/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-```
--->
 **Conda environments**
 
 Before starting to work with the data we are going to create a new _conda environment_ where we are going to install the necessary programs. Conda environments are virtual spaces where we can install whatever we need for a project without modifying the base installation. This is very usefull when some of the programs we want to use require different libraries versions that cannot be install at the same time. Additionally, if something goes wrong, we can remove the environment an start over. To create a conda environment we use the following command:
@@ -329,11 +301,11 @@ cd /home/metag/bin
 ln -s /home/metag/software/bowtie2-2.5.2-linux-x86_64/bowtie2 .
 ln -s /home/metag/software/bowtie2-2.5.2-linux-x86_64/bowtie2-build .
 
-# Now we have to tell the shell were to find the binaries by editing /home/metag/.bash_profile using _vim_ or _nano_ and adding the next line:
+# Now we have to tell the shell were to find the binaries by editing /home/metag/.bashrc using _vim_ or _nano_ and adding the next line:
 export PATH=/home/metag/bin/:$PATH
 
 # Finally, we need to initialize the profile
-source /home/metag/.bash_profile
+source /home/metag/.bashrc
 ```
 
 - **Decontamination human reads**
