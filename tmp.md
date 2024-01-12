@@ -1,3 +1,7 @@
-gdown https://drive.google.com/uc?id=1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
-mkdir /home/metag/miniconda3/envs/stamp
-tar -xzf stamp.tar.gz -C /home/metag/miniconda3/envs/stamp
+```{r}
+# install.package("ggplots2")
+library(ggplot2)
+setwd("/home/metag/Documents/unit_5")
+df <- read.table(file = 'metagenome_contributions.txt', sep = '\t', header = TRUE)
+ggplot(aes(y = ContributionPercentOfSample, x = Gene, fill = Phylum), data = df) + geom_bar( stat="identity")
+```
