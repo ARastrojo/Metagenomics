@@ -207,10 +207,12 @@ This package additionaly install some packages that we are going to use such as 
 if (!require(remotes)) { install.packages("remotes") }
 remotes::install_github("fbreitwieser/pavian")
 ```
+<!-- Se me ha olvidado meterlo
 #### ggpicrust2 (for Picrust2 results visualization)
 ``` R
 install.packages("ggpicrust2")
 ```
+-->
 #### SQMtools (for SqueezeMeta results visualization)
 ``` R
 if (!require("BiocManager", quietly = TRUE))
