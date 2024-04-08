@@ -529,8 +529,10 @@ Then, create a file with _vim_, _nano_ or other plain text editor and save it as
 ```bash
 #!/bin/bash
 
-
+# We need to add this command to avoid a conda initiation problem when running from a script -> https://stackoverflow.com/questions/34534513/calling-conda-source-activate-from-bash-script
 eval "$(conda shell.bash hook)"
+
+# Activation ngs environment
 conda activate ngs
 
 # Link reads
@@ -562,9 +564,12 @@ bowtie2 -x ../unit_3/phix -1 virome_1_qf_paired_nonHuman_R1.fq.gz -2 virome_1_qf
 spades.py -t 4 --careful -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_careful
 spades.py -t 4 --meta    -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_meta
 spades.py -t 4 --sc      -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_sc
+conda deactivate
+
 
 # Assembly analysis
-conda deactivate
+
+# Activation quast environment
 conda activate quast
 mkdir quast
 ln -rs ./virome_1_careful/contigs.fasta   ./quast/virome_1_contigs_careful.fasta
