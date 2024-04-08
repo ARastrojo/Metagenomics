@@ -21,24 +21,6 @@ pip install gdown
 conda deactivate
 ```
 
-**Remove conda environments**
-
-To remove an environment we can used the following conda command:
-
-```bash
-conda env remove --name env_name
-# Replace env_name by the name of the desired environment
-```
-
-Or by simple removing the environment folder inside _miniconda3_ directory:
-```bash
-rm -fr /home/metag/miniconda3/envs/env_name
-# Replace /home/metag/ by the correct path in you system
-# Replace env_name by the name of the desired environment
-```
-
-<!-- > If local conda installation does not work or something goes wrong, we can make used of virtual machine (the one that Miguel showed you in previous classes or a small one I have prepared ([Download link](https://drive.google.com/uc?id=1jz037M7kw0yyNs0em3ZsXrKkpq8gw2uG), md5=eb53666bfe7510827ab20b4e8324294e and [virtual machine creation commands](https://drive.google.com/file/d/1-Hp1YrTKkU5Uyxh3bC1fci7dAfL-UIVj/view?usp=sharing))
--->
 * * *
 
 ## *De Novo* Assembly
@@ -59,6 +41,8 @@ cd unit_3
 gdown https://drive.google.com/uc?id=1gtnWLZWdZxn6j-oDvro2sDw3YHPZI2LM
 unzip ECTV_reads.zip
 ```
+
+> If _gdown_ fails, which is common due to many concurrent connections, you can download the reads manually [here](https://drive.google.com/file/d/1gtnWLZWdZxn6j-oDvro2sDw3YHPZI2LM/view?usp=sharing).
 
 ### 1.2 Checking file integrity
 
@@ -286,7 +270,7 @@ Pins seem to be involved in the conflict. Currently pinned specs:
 
 ```
 
-As mentioned before, I am not a computer expert, and I do not want to spend my time fighting against computing problems... So what can we do? Googling the error and try by copy/paste the possible solutions, which sometimes is the better solution. But here, we are going to install _Bowtie2_ by ourself:
+As mentioned before, I am not a computer expert, and I do not want to spend my time fighting against computing problems... So what can we do? Googling the error and try by copy/paste the possible solutions, which sometimes is the better solution. But here, we are going to install _Bowtie2_ ourselves:
 
 ```bash
 # Create a folder to contain software and download
@@ -322,7 +306,6 @@ bowtie2-build GCF_000001405.40_GRCh38.p14_cds_from_genomic.fna.gz human_cds
 
 So, to reduce the time I have created the index for you which is located in /home/metag/Documents/data/human_cds_index/. The index is formed by several files, all of then ended with _.bt2_ extension. To avoid moving or copying files we will create symbolic links in our folder. To do so, we use a loop:
 
-
 ```bash
 cd /home/metag/Documents/unit_3
 for f in /home/metag/Documents/data/human_cds_index/*.bt2;
@@ -331,6 +314,13 @@ ln -s $f .
 done
 ```
 
+<!--
+Link to download human cds index:
+```bash
+# Downloading index
+gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
+```
+-->
 - **Aligning reads against human cds**
 
 ```bash
@@ -366,7 +356,6 @@ bowtie2 -x phix -1 ECTV_qf_paired_nohuman_R1.fastq -2 ECTV_qf_paired_nohuman_R2.
 # Count decontaminated reads
 wc -l ECTV_qf_paired_nohuman_noPhiX_R* | awk '{print $1/4}'
 ```
-
 
 ## 2. De novo assembly with Spades
 
@@ -485,7 +474,7 @@ A better and more complete way of making assemblies comparison is by using dedic
 If we try to install Quast  in our _ngs_ environment it will fail because there are some incompatible libraries with python 3.11. Therefore we must create a new environmet for quast.
 ```bash
 # conda deactivate # To exist from ngs environment
-conda create -n quast # we do no specify any python version
+conda create -n quast -y # we do no specify any python version
 conda activate quast
 conda install -c bioconda quast -y
 ```
@@ -505,7 +494,7 @@ ln -rs ./ECTV_isolate/scaffolds.fasta ./quast/scaffolds_isolate.fasta
 
 > _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create them, it is better to use absolute paths in mac. 
 
-Additionally, in this single genome sequencing example we have a reference genome to compare our assemblies with (This is not possible for metagenomes), so we are going to supply this reference genome to quast: 
+Additionally, in this single genome sequencing example we have a reference genome to compare our assemblies with (this is not possible for metagenomes), so we are going to supply this reference genome to quast: 
 
 ```bash
 cd quast
@@ -527,12 +516,21 @@ Take a look to the report.pdf/report.html (also report.txt):
 
 In order to have a more realistic example of the whole process we are going to use simulated metagenomic reads. I have used [InSilicoSeq](https://github.com/HadrienG/InSilicoSeq). The advantage of using simulated reads instead of real metagenomic data resides in the fact that with simulated reads we can have the original genomes used for the simulation and the proportion of each one in the data. 
 
-To speed up the process, and to show you how to _automate_ it, in this case we are going to use a _bash_ script:
+To speed up the process, and to show you how to _automate_ it, in this case we are going to use a _bash_ script. Fisrt, we need to create a folder 
+
+```bash
+cd /home/metag/Documents/
+mkdir unit_3b
+cd unit_3b
+```
+
+Then, create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script):
 
 ```bash
 #!/bin/bash
 
-source ~/.bash_profile
+
+eval "$(conda shell.bash hook)"
 conda activate ngs
 
 # Link reads
@@ -582,12 +580,9 @@ conda deactivate
 
 ```
 
-Create a file with _vim_, _nano_ or other plain text editor and save it as virome_script.sh (in the folder we want to execute the script). Then, we have to give execution permision to the file:
+We have to give execution permision to the file:
 
 ```bash
-cd /home/metag/Documents/
-mkdir unit_3b
-cd unit_3b
 
 # Create virome_script.sh
 chmod 755 virome_script.sh 
@@ -607,7 +602,7 @@ cd /home/metag/Documents/unit_3b
 
 ## 5. Homework
 
-Repeat all the steps with a viral metagenome from /home/metag/Documents/data/viromes/.    
+Repeat all the steps with a viral metagenome from /home/metag/Documents/data/viromes/ of your choice.   
 
 Compare different *de novo assemblies* options (try --meta) or different *kmer* values or different quality filtering parameters.  
 
@@ -616,9 +611,5 @@ You must perform at least 3 different assemblies.
 Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.). Compare different *de novo assemblies* with QUAST and choose the best based on the obtained metrics (smaller number of contigs, higher N50, smaller L50, longest total assembly length, etc.).
 
 > NOTE: In the quality filtering step, modify the MINLEN argument considering the original read length. Consider that reads with a minimum of 50% of the average original size are ok for subsequent analyses.
-
-```bash
-spades.py -t 2 -m 4 -1 R1.fastq -2 R2.fastq -o output_folder
-```
 
 Submit this document as a task to Moodle/Unit3 before XXth of XX.
