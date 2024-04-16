@@ -19,6 +19,9 @@ To easily download files/folders from Google Drive we are going to use *gdown* p
 conda activate ngs
 pip install gdown
 conda deactivate
+
+# It can also be install using conda
+# conda install -c bioconda gdown -y
 ```
 
 * * *
@@ -314,13 +317,13 @@ ln -s $f .
 done
 ```
 
-<!--
-Link to download human cds index:
+
+Link to download human cds index if you are using your our machine:
 ```bash
 # Downloading index
 gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
 ```
--->
+
 - **Aligning reads against human cds**
 
 ```bash
