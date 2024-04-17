@@ -295,6 +295,14 @@ export PATH=/home/metag/bin/:$PATH
 source /home/metag/.bashrc
 ```
 
+
+Another options that also works is to create a new conda environment without indicating any python version to allow conda to install the most convinient:
+```bash
+conda create -n bowtie2 -c bioconda bowtie2 -y
+````
+
+However, this way we have to move between environments 
+
 - **Decontamination human reads**
 
 The file containing all human coding sequences can be download from [NCBI database](https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/latest_assembly_versions/GCF_000001405.40_GRCh38.p14/GCF_000001405.40_GRCh38.p14_cds_from_genomic.fna.gz). Then, we need to build the index as follows:
@@ -317,12 +325,22 @@ ln -s $f .
 done
 ```
 
-
 Link to download human cds index if you are using your our machine:
 ```bash
 # Downloading index
 gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
+# create symbolic links
+for f in human_cds_index/*; do ln -s $f .; done
 ```
+
+| File                | md5 hash                         |
+|---------------------|----------------------------------|
+| human_cds.1.bt2     | 895e2c36196b6e23f6b0b6860c6afd6d |
+| human_cds.2.bt2     | 5d9d04a58dd4508468a242ced3de84de |
+| human_cds.3.bt2     | 1a80d116d89bc49d8bb242dbca52c075 |
+| human_cds.4.bt2     | eefdf85401a6553e6f6babc87b91af86 |
+| human_cds.rev.1.bt2 | 6ae49bf96e7977db0442a00a0193dde6 |
+| human_cds.rev.2.bt2 | 56a21b29ea45e4c121b9ac0fd3991bc9 |
 
 - **Aligning reads against human cds**
 
@@ -374,6 +392,17 @@ We can easily install SPAdes:
 
 ```bash
 conda install -c bioconda spades -y
+#############################################################################################
+#                                                                                           #
+#   Note: SPAdes installed through bioconda on MacOS may be somewhat slower than the SPAdes #
+#   binaries distributed by the authors at                                                  #
+#                                                                                           #
+#   http://cab.spbu.ru/files/release3.15.2/SPAdes-3.15.2-Darwin.tar.gz
+#                                                                                           #
+#   due to unavailability of parallel libstdc++ for the Clang compiler used by bioconda on  #
+#   MacOS; see https://github.com/ablab/spades/issues/194#issuecomment-523175204            #
+#                                                                                           #
+#############################################################################################
 ````
 
 As our dataset come from a single viral genome, the most adequate protocol should be *--isolate*, however in my experience, default assembly protocol with *--careful* flag give us better results (based mainly on contig length). To check this, we are going to test both procotols:
@@ -480,6 +509,9 @@ If we try to install Quast  in our _ngs_ environment it will fail because there 
 conda create -n quast -y # we do no specify any python version
 conda activate quast
 conda install -c bioconda quast -y
+
+# or 
+# conda create -n quast -c bioconda quast -y
 ```
 
 Now that we have QUAST, we must have all contigs/scaffolds from the different assemblies in the same folder, but instead of copying the data, to reduce redundancy and save a little bit of disk space, we are going to make use of symbolic links.
@@ -497,6 +529,15 @@ ln -rs ./ECTV_isolate/scaffolds.fasta ./quast/scaffolds_isolate.fasta
 
 > _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create them, it is better to use absolute paths in mac. 
 
+```bash
+# links in mac
+cd quast
+ln -s ../ECTV_careful/contigs.fasta contigs_careful.fasta
+ln -s ../ECTV_careful/scaffolds.fasta scaffolds_careful.fasta
+ln -s ../ECTV_isolate/contigs.fasta contigs_isolate.fasta
+ln -s ../ECTV_isolate/scaffolds.fasta scaffolds_isolate.fasta
+```
+
 Additionally, in this single genome sequencing example we have a reference genome to compare our assemblies with (this is not possible for metagenomes), so we are going to supply this reference genome to quast: 
 
 ```bash
@@ -504,7 +545,9 @@ cd quast
 wget ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/841/905/GCF_000841905.1_ViralProj14211/GCF_000841905.1_ViralProj14211_genomic.fna.gz
 gunzip GCF_000841905.1_ViralProj14211_genomic.fna.gz 
 mv GCF_000841905.1_ViralProj14211_genomic.fna ECTV_reference_genome.fasta
+conda activate quast
 quast.py contigs* scaffolds* -R ECTV_reference_genome.fasta
+conda deactivate
 ```
 
 Take a look to the report.pdf/report.html (also report.txt):
@@ -538,8 +581,11 @@ eval "$(conda shell.bash hook)"
 # Activation ngs environment
 conda activate ngs
 
-# Link reads
-ln -s /home/metag/Documents/data/viromas/virome_1.tar.gz .
+# Download reads
+gdown 1QModYfordyNU0LjnE27-plr-QEftbSi5
+
+# If you are using virtual machine the file is already downloaded 
+# ln -s /home/metag/Documents/data/viromas/virome_1.tar.gz .
 tar -xzf virome_1.tar.gz
 
 # Raw reads quality  assessment
@@ -569,23 +615,21 @@ spades.py -t 4 --meta    -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 viro
 spades.py -t 4 --sc      -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_sc
 conda deactivate
 
-
 # Assembly analysis
 
 # Activation quast environment
 conda activate quast
 mkdir quast
-ln -rs ./virome_1_careful/contigs.fasta   ./quast/virome_1_contigs_careful.fasta
-ln -rs ./virome_1_careful/scaffolds.fasta ./quast/virome_1_scaffolds_careful.fasta
-ln -rs ./virome_1_meta/contigs.fasta      ./quast/virome_1_contigs_meta.fasta
-ln -rs ./virome_1_meta/scaffolds.fasta    ./quast/virome_1_scaffolds_meta.fasta
-ln -rs ./virome_1_sc/contigs.fasta        ./quast/virome_1_contigs_sc.fasta
-ln -rs ./virome_1_sc/scaffolds.fasta      ./quast/virome_1_scaffolds_sc.fasta
-ln -rs ./virome_1_genomes.fasta          ./quast/virome_1_genomes.fasta
 cd quast
+ln -s ../virome_1_careful/contigs.fasta   virome_1_contigs_careful.fasta
+ln -s ../virome_1_careful/scaffolds.fasta virome_1_scaffolds_careful.fasta
+ln -s ../virome_1_meta/contigs.fasta      virome_1_contigs_meta.fasta
+ln -s ../virome_1_meta/scaffolds.fasta    virome_1_scaffolds_meta.fasta
+ln -s ../virome_1_sc/contigs.fasta        virome_1_contigs_sc.fasta
+ln -s ../virome_1_sc/scaffolds.fasta      virome_1_scaffolds_sc.fasta
+ln -s ../virome_1_genomes.fasta           virome_1_genomes.fasta
 quast.py virome_1_contigs_careful.fasta virome_1_contigs_meta.fasta virome_1_contigs_sc.fasta virome_1_scaffolds_careful.fasta virome_1_scaffolds_meta.fasta virome_1_scaffolds_sc.fasta -R virome_1_genomes.fasta
 conda deactivate
-
 ```
 
 We have to give execution permision to the file:
@@ -600,7 +644,6 @@ chmod +x virome_script.sh
 
 Now, run the script:
 ```bash
-cd /home/metag/Documents/unit_3b
 ./virome_script.sh
 ```
 
@@ -610,7 +653,7 @@ cd /home/metag/Documents/unit_3b
 
 ## 5. Homework
 
-Repeat all the steps with a viral metagenome from /home/metag/Documents/data/viromes/ of your choice.   
+Repeat all the steps with a viral metagenome from /home/metag/Documents/data/viromes/ of your choice (or from the [Google drive folder](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing)).   
 
 Compare different *de novo assemblies* options (try --meta) or different *kmer* values or different quality filtering parameters.  
 

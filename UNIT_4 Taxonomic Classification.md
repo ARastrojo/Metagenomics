@@ -5,7 +5,7 @@
 - Create a folder and obtain reads:
 
 ```bash
-cd /media/DiscoLocal/BioInformatica/
+cd /home/metag/
 mkdir unit_4
 ```
 
@@ -14,13 +14,11 @@ As we have already perform quality filtering and decontamination we only need to
 
 ```bash
 cd unit_4
-ln -rs ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz ./virome_1_qf_R1.fq.gz
-ln -rs ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz ./virome_1_qf_R2.fq.gz
+ln -s ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz virome_1_qf_R1.fq.gz
+ln -s ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz virome_1_qf_R2.fq.gz
 
 # Note that we have "modify" the name of the files in the link, just for convinience
 ```
-
-> _-r_ option does not exit in mac, take care creating symbolic link in mac with relative path, although it is possible to create, it is better to use absolute paths in mac. 
 
 Addittionaly, we are going to download quality filtered reads from *virome_2* to compare taxonomic classification from both viromes:
 
@@ -32,6 +30,8 @@ gdown https://drive.google.com/uc?id=1TuTyun2dlmUMvsF6N9LK6zAySI3xvqtx
 # MD5
 # 7c508583dbda80b948b5f88eb879ae16  virome_2_qf_R1.fq.gz
 # d1894eec561128bc29e4a3050e0eafaa  virome_2_qf_R2.fq.gz
+
+# Virome_2 is also avaible in Moodle
 ```
 
 > Take a look to scripts _trimo.sh_ and _decontaminate.sh_ under script folder in github. 
@@ -42,7 +42,7 @@ gdown https://drive.google.com/uc?id=1TuTyun2dlmUMvsF6N9LK6zAySI3xvqtx
 
 - **Installing DIAMOND**
 ```bash
-conda activate ngs
+# conda activate ngs
 conda install -c bioconda diamond -y
 ````
 
@@ -77,12 +77,15 @@ diamond blastx -d viralproteins.dmnd -q virome_1.fq -o virome_1_vs_viralprotein.
 # Total time = 214.286s ~ 4 minutes
 # Reported 1458220 pairwise alignments, 1468652 HSPs.  
 # 152252 queries aligned.  
+
+# zcat do not exit in mac, you should use _gunzip -c_ instead
+# gunzip -c virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz > virome_1.fq
 ```
 
 However, although Diamond running time is not to high (~160k reads takes ~4 minutes ), MEGAN, the program we are going to use for parsing Diamond hits and assign taxonomy to the reads, uses a <u>huge amount of RAM memory</u> and with large dataset many times it gets blocked. To avoid this, we are going to take  a **random subsample** using [seqtk](https://github.com/lh3/seqtk):
 
 ```bash
-conda install -c bioconda seqtk
+conda install -c bioconda seqtk -y
 
 # Virome_1
 seqtk sample -s 123 virome_1_qf_R1.fq.gz 5000 > virome_1_10k.fq
@@ -101,6 +104,8 @@ seqtk sample -s 123 virome_2_qf_R2.fq.gz 5000 >> virome_2_10k.fq
 # Running diamond on both viromes
 diamond blastx -d viralproteins.dmnd -q virome_1_10k.fq -o virome_1_10k.m8
 diamond blastx -d viralproteins.dmnd -q virome_2_10k.fq -o virome_2_10k.m8
+
+# By default diamond uses all available threads, but we can change this by using _--threads_ option
 ```
 
 Take a look to the output file:
@@ -145,25 +150,25 @@ We can take the accession number of one of the hits (column 2) and paste in NCBI
 
 MEGAN6 analyses the taxonomic content of a set of DNA reads aligned with a NCBI dataset and assigns reads into a taxonomy tree.
 
-MEGAN6 can be installed as GUI-based in Windows/Mac or can be installed through conda (in fact, MEGAN6 is nos available through conda in mac):
+MEGAN6 can be installed as GUI-based in Windows/Mac or can be installed through conda (in fact, MEGAN6 is not available through conda in mac):
 
 ```bash
 conda activate ngs
 conda install -c bioconda megan -y
 ```
 
-Additionally, we need to download the mapping file [megan-map-Feb2022-ue.db.zip](https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip) to provide taxonomic information of the database to MEGAN. 
+For those using its own computer (either mac or windows) it is better to download [MEGAN](https://software-ab.cs.uni-tuebingen.de/download/megan6/welcome.html) and install using the GUI. If you are using _WSL_ your will not be able to use MEGAN though the terminal because _WSL_ is limited to only command line tools, so any application with graphical (windows) interface will fail. But, as you are running _WSL_ under Windows you can install MEGAN in Windows and switch between command line in _WSL_ and MEGAN in Windows easily. 
 
-<!--https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022.db.zip-->
+Additionally, we need to download the mapping file [megan-map-Feb2022-ue.db.zip](https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip) to provide taxonomic information of the database to MEGAN. However, this file is 2.15 Gb in size compressed, about ~8 GB decompressed, because it contains all described protein taxonomic information. Using this huge file in MEGAN will make it slow and sometimes it crashes. To avoid this, I have filtered all non-viral proteins in the database out by using python _sqlite3_ library (you can see the process in the notebook "filter_megan_db.ipynb" under script folder in github)
 
 ```bash
-wget https://software-ab.cs.uni-tuebingen.de/download/megan6/megan-map-Feb2022-ue.db.zip
+# Download MEGAN mapping file (is already download in virtual machine in /home/metag/Documents/)
+gdown https://drive.google.com/uc?id=1330Lx36_mMvylVTUHnDI8iIlSCg0WnA6
 
-# Unzip mapping file (this will take a while...)
-unzip megan-map-Feb2022-ue.db.zip
+# If download fail, it can also be download from moodle
 ```
 
-To run MEGAN write MEGAN a in terminal window (from _ngs_ environment).
+To run MEGAN write _MEGAN_ in the terminal window (from _ngs_ environment) or open the app as a regular app in Mac or Windows.
 
 - **Import Diamond/blast output files (ending in .m8.) to the MEGAN6 graphical user interface**
 
@@ -183,7 +188,7 @@ Click on Next and Load the Accession mapping file (unzipped).
 
 Then click on “Apply” (and wait.....)
 
-> Although we have reduce the number of input reads to dicrease memory consumption, in the virtual machine (4 Gb of RAM) the analysis can get blocked or sometimes the program suddenly gets close...
+> Although we have reduce the number of input reads and mapping file size to dicrease memory consumption, MEGAN usually get blocked or sometimes the program suddenly gets close... 
 
 **Results: Family level and with the number of reads**
 
@@ -197,7 +202,6 @@ Once you have the graphical overview of the taxomomic composition of the reads f
 5. Check the alignments from a specific taxon by clicking on that with the right
 mouse button. Select “Inspect” option.
 6. We can change LCA parameters in Options and increase the minimal score to 60 and reduce the max e-value allow to 10<sup>-10</sup> and the min complexity to 0.5 in order to reduce false positive alignments.
-
 
 > MEGAN results are stored in a file called *virome_1_10k.rma6* created in the same folder than input files.
 
@@ -242,15 +246,17 @@ As with alignment-based programs, here we also have to prepare an adequate datab
 ```bash
 # Download viral database
 wget https://genome-idx.s3.amazonaws.com/kraken/k2_viral_20221209.tar.gz
-mkdir k2_viral_20221209
-tar -xzf k2_viral_20221209.tar.gz -C k2_viral_20221209
+mkdir k2_viral
+tar -xzf k2_viral_20221209.tar.gz -C k2_viral
+
+# In the virtual machine the database is already download in /home/metag/Documents/k2_viral/
 ````
 
 - **Running Kraken2**
 
 ```bash
 # Virome 1
-kraken2 -db k2_viral_20221209 --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz --report virome_1_report.txt > virome_1_k2_output.txt 
+kraken2 -db k2_viral --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz --report virome_1_report.txt > virome_1_k2_output.txt 
 ````
 
 > Loading database information... done.  
@@ -260,7 +266,7 @@ kraken2 -db k2_viral_20221209 --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz
 
 ```bash
 # Virome 2
-kraken2 -db k2_viral_20221209 --paired virome_2_qf_R1.fq.gz virome_2_qf_R2.fq.gz --report virome_2_report.txt > virome_2_k2_output.txt 
+kraken2 -db k2_viral --paired virome_2_qf_R1.fq.gz virome_2_qf_R2.fq.gz --report virome_2_report.txt > virome_2_k2_output.txt 
 ```
 
 > Loading database information... done.  
@@ -326,7 +332,7 @@ But, it is still difficult to interpert. The columns of the report are described
 3) Number of fragments assigned directly to this taxon
 4) A rank code indicating (U)nclassified, (R)oot, (D)omain, (K)ingdom, (P)hylum, (C)lass, (O)rder, (F)amily, (G)enus, (S)pecies. Taxa that are not any of these 10 ranks have a rank code that is formed by using the rank code of the closest ancestor rank with a number indicating the distance from that rank. Ex. Pseudomonas phage phiIBB-PAA2 has a rank code of “S1” because it is a subspecies one step below Bruynoghevirus PAA2.
 5) The Taxonomic ID number from NCBI
-6) Indented Scientific Name
+6) Scientific Name
 
 - **Visualization of Kraken2 results using [Pavian](https://github.com/fbreitwieser/pavian)**
 
@@ -366,8 +372,8 @@ Finally, we can compare both viromes classifications by clicking in _"comparison
 
 ## 4. HOMEWORK
 
-Follow the workflow of this tutorial for the taxonomic binning and comparison of 2 viromes, the one used in unit_3 and another one  from [here](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing) (quality filtering should be performed). Choose one of the taxonomic binning methods described here (alignment-based or k-mer-based). 
+Follow the workflow of this tutorial for the taxonomic binning and comparison of 2 viromes, the one used in unit_3 and another one  from [here](https://drive.google.com/drive/folders/1lzKVp_bkAkLcS5b2Sk5eeAYzzZU5s8R7?usp=sharing) (quality filtering and decontamination should be performed). Choose one of the taxonomic binning methods described here (alignment-based or k-mer-based). 
 
 Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.) and the most relevant results with the taxonomy assessment of the viromes and their comparison (use family level). Note that across with simulated virome files there is a file containing the viral genomes used for the simulation, their relative abundance and their taxonomy, therefore, the quality of the taxonomy binning can be assessed, at least qualitatively.
 
-Deadline: 20th May.
+Deadline: XXth May.
