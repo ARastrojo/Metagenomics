@@ -372,7 +372,7 @@ p
 ```
 
 __Pathways DA plots (soil type: bulk soil or rhizosphere)__
-![metacyc_DA_type](./images/metacyc_DA_type.png)
+![metacyc_DA_type](./images/metacyc_da_type.png)
 
 __Pathways DA plots (soil origirin: agriculture or forestal)__
 ![metacyc_DA_type](./images/metacyc_DA_soil.png)
