@@ -13,8 +13,8 @@ sudo apt-get install make
 
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-py311_23.10.0-1-Linux-x86_64.sh
-chmod +x Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
+chmod +x Miniconda3-py311_23.10.0-1-Linux-x86_64.sh
+bash Miniconda3-py311_23.10.0-1-Linux-x86_64.sh
 ```
 
 **Miniconda activation**
@@ -142,7 +142,7 @@ conda deactivate
 
 # Database files can also be download from picrust webpage (https://picrust.github.io/picrust/picrust_precalculated_files.html)
 
-# Database file is located in /home/metag/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data
+# Database file is located in $HOME/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data
 ```
 
 <!--### Picrust2
@@ -154,7 +154,7 @@ mamba create -n picrust2 -c bioconda -c conda-forge picrust2=2.5.2
 
 ### STAMP
 
-This program is out of date and cannot be installed using _conda_ because uses python v2.7 which is no longer maintained. Although some python v2.7 can be used, in this case STAMP requires a library (pyQt4) which is not avaible. But we can _clone_ an all _conda environment_ created when all libraries were availble by using _conda-pack_ (see Tips before starting for more details). 
+This program is out of date and cannot be installed using _conda_ because uses python v2.7 which is no longer maintained. Although some python v2.7 can be used, in this case STAMP requires a library (pyQt4) which is not avaible. But we can _clone_  the  _conda environment_ created when all libraries were availble by using _conda-pack_ (see Tips before starting for more details). 
 
 ```bash
 gdown https://drive.google.com/uc?id=1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
@@ -179,9 +179,9 @@ Ubuntu repositories do not contain the latest stable version for R. To get it, w
 
 ``` bash
 # update indices
-sudo apt update -qq
+sudo apt-get update -qq
 # install two helper packages we need
-sudo apt install --no-install-recommends software-properties-common dirmngr
+sudo apt-get install --no-install-recommends software-properties-common dirmngr
 # add the signing key (by Michael Rutter) for these repos
 # To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc 
 # Fingerprint: E298A3A825C0D65DFD57CBB651716619E084DAB9
@@ -207,10 +207,7 @@ This package additionaly install some packages that we are going to use such as 
 if (!require(remotes)) { install.packages("remotes") }
 remotes::install_github("fbreitwieser/pavian")
 ```
-#### ggpicrust2 (for Picrust2 results visualization)
-``` R
-install.packages("ggpicrust2")
-```
+
 #### SQMtools (for SqueezeMeta results visualization)
 ``` R
 if (!require("BiocManager", quietly = TRUE))

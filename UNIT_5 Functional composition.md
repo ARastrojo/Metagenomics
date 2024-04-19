@@ -15,7 +15,6 @@ It uses an OTU table that has already been generated for use with PICRUSt (using
 ### 1.1. Create a new directory that will store all of the files created in this tutorial:
 
 ```bash
-cd /home/metag/Documents/
 mkdir unit_5
 cd unit_5
 ```
@@ -23,10 +22,11 @@ cd unit_5
 ### 1.2. Download dataset and unzip:
 
 ```bash
-ls -s /home/metag/Documents/data/picrust_example.zip .
+gdown https://drive.google.com/uc?id=1oq3D23KBaJ5UhVh--eVL6fa50oIpGl0m
 unzip picrust_example.zip
 
 # MD5 (picrust_example.zip): a54f27f58d71091470d4c093af8f3e00 
+# The file is also available in Moodle
 ``` 
 
 In your working directory you should have an OTU table called "otus.biom" and a mapping file "map.tsv". The OTU table has been produced within QIIME using the greengenes reference database. The mapping file is just a tab-delimited text file that has sample ids in the first column and a couple of additional columns with metadata for each sample.
@@ -47,11 +47,18 @@ In your working directory you should have an OTU table called "otus.biom" and a 
 
 ## 2. Running PICRUSt predictions 
 
-PICRUSt environmnent should be active:
-
+Installing PICRUSt (is already installed in the virtual machine):
 ```bash
+conda create -n picrust -c bioconda picrust -y
+
+# Download pre-computed database files
 conda activate picrust
-# Database files were already downloaded. See software installation instructions. 
+download_picrust_files.py
+conda deactivate
+
+# Database files can also be download from picrust webpage (https://picrust.github.io/picrust/picrust_precalculated_files.html)
+
+# Database file is located in $HOME/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data
 ```
 
 ### 2.1. Normalize 16S copy number
@@ -59,6 +66,7 @@ conda activate picrust
 The first step is to correct the OTU table based on the predicted 16S copy number for each organism in the OTU table:
 
 ```bash
+# conda activate picrust
 normalize_by_copy_number.py -i otus.biom -o otus_corrected.biom 
 ```
 Note that this is just a normal OTU table which then could be used with all other tools.
@@ -123,8 +131,9 @@ biom convert -i ko_predictions.biom -o ko_predictions.txt --to-tsv --header-key 
 To visualize our predicted genes in a graphical way we can make use of [iPATH3](https://pathways.embl.de/). To do that, we need the list of KOs represented in our dataset:
 
 ```bash
-# sudo apt-get install gawk 
-# Less try yo compare functional genes from 2 samples (healthy mouse on column 2 vs sick mouse on column 11)
+# sudo apt-get install gawk
+# brew install gawk
+# Less try to compare functional genes from 2 samples (healthy mouse on column 2 vs sick mouse on column 11)
 gawk 'NR>2{if ($2 > 0 && $11 > 0 ) print $1 " #00ff00 W10"}' < ko_predictions.txt > ko.txt
 gawk 'NR>2{if ($2 > 0 && $11 == 0 ) print $1 " #ff0000 W10"}' < ko_predictions.txt >> ko.txt
 gawk 'NR>2{if ($2 == 0 && $11 > 0 ) print $1 " #0000ff W10"}' < ko_predictions.txt >> ko.txt
@@ -155,8 +164,8 @@ These maps are interactive and we can explore our data in detail.
 > **Optional**: to map all functional genes merging all samples from different groups (sick vs healthy for instance) we need to run the following code:
 
 ```bash
-conda deactivate
-conda activate qiime
+# conda deactivate
+conda activate qiime2
 
 # import biom to artifact
 qiime tools import --input-path otus.biom --type 'FeatureTable[Frequency]' --input-format BIOMV100Format --output-path otus.qza
@@ -318,7 +327,7 @@ To explore the result data we can also make use of R and ggplots2:
 ```{r}
 # install.package("ggplots2")
 library(ggplot2)
-setwd("/home/metag/Documents/unit_5")
+setwd("/Users/arastrojo/unit_5")
 df <- read.table(file = 'metagenome_contributions.txt', sep = '\t', header = TRUE)
 ggplot(aes(y = ContributionPercentOfSample, x = Gene, fill = Phylum), data = df) + geom_bar( stat="identity")
 ```

@@ -2,7 +2,7 @@
 
 From Miguel dataseq: """We are using data from article with doi https://doi.org/10.1186/s12866-019-1572-x . This work analyzes the influence of soybean rhizosphere on bacterial communities both in agriculture and forest soil. 16S rRNA gene based bacteria profiling were accomplished with MiSeq 275 bp paired-end sequencing targeted V3-V4 regions, with forward primer 341F = 5′-CCTACGGGNGGCWGCAG-3′ (17bps) and reverse primer 785R = 5′-GACTACHVGGGTATCTAATCC-3 (21 bps). Amplicon size around 445 nts. Data was downlocdaded from BioProject PRJNA474716."""
 
-The composition of microbes immediately after collection (**fresh soil**) and after 2 months in the greenhouse (**bulk soil**) were similar, indicating that the greenhouse environment and the time lapse did not largely alter microbial communities from the soil.
+<!--The composition of microbes immediately after collection (**fresh soil**) and after 2 months in the greenhouse (**bulk soil**) were similar, indicating that the greenhouse environment and the time lapse did not largely alter microbial communities from the soil. -->
 
 I have follow [Qiime2 tutorial from Miguel Redondo](https://github.com/migred/metagenomics21/wiki/QIIME2-Brief-Tutorial)
 
@@ -15,14 +15,8 @@ Follow instructions from [Qiime2 manual](https://dev.qiime2.org/latest/quickstar
 conda update conda
 conda install wget
 # Installing Qiime2
-wget https://data.qiime2.org/distro/core/qiime2-2023.2-py38-osx-conda.yml
-conda env create -n qiime2 --file qiime2-2023.2-py38-osx-conda.yml
-conda activate qiime2
-
-
-# RSCRIPT seems to work in the last version
 wget https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.2-py38-osx-conda.yml
-conda env create -n qiime2-amplicon-2024.2 --file qiime2-amplicon-2024.2-py38-osx-conda.yml
+conda env create -n qiime2 --file qiime2-amplicon-2024.2-py38-osx-conda.yml
 conda activate qiime2
 ```
 
@@ -31,6 +25,9 @@ conda activate qiime2
 **manifest.tsv**
 
 See [Manifest file](https://github.com/qiime2/docs/blob/master/source/tutorials/importing.rst#fastq-manifest-formats) for more details.
+
+> We have selected only some of the samples for the example
+
 
 | sample-id | forward-absolute-filepath | reverse-absolute-filepath |
 | --- | --- | --- |
@@ -139,6 +136,66 @@ qiime feature-table summarize \
       --i-table table_filt.qza \
       --o-visualization table_filt.qzv
 ```
+
+### Phylogenetic distances determination using MAFFT and FastTree
+
+```bash
+qiime phylogeny align-to-tree-mafft-fasttree \
+                --i-sequences rep-seqs_filt.qza \
+                --o-alignment aligned-rep-seqs.qza \
+                --o-masked-alignment masked-aligned-rep-seqs.qza \
+                --o-tree unrooted-tree.qza \
+                --o-rooted-tree rooted-tree.qza
+```
+
+### Taxonomic assignment
+
+#### Silva database
+
+We are going to use RESCRIPt to download and curate database:
+
+```bash
+conda install -c conda-forge -c bioconda -c qiime2 -c defaults xmltodict
+pip install git+https://github.com/bokulich-lab/RESCRIPt.git
+```
+
+```bash
+# Download database
+qiime rescript get-silva-data \
+      --p-version '138' \
+      --p-target 'SSURef_NR99' \
+      --p-include-species-labels \
+      --o-silva-sequences silva-138-ssu-nr99-seqs.qza \
+      --o-silva-taxonomy silva-138-ssu-nr99-tax.qza
+
+# Remove sequences with ambiguous bases
+qiime rescript cull-seqs \
+      --i-sequences silva-138-ssu-nr99-seqs.qza \
+      --o-clean-sequences silva-138-ssu-nr99-seqs-cleaned.qza
+
+# Remove bad sequences (not length math)
+qiime rescript filter-seqs-length-by-taxon \
+      --i-sequences silva-138-ssu-nr99-seqs-cleaned.qza \
+      --i-taxonomy silva-138-ssu-nr99-tax.qza \
+      --p-labels Archaea Bacteria Eukaryota \
+      --p-min-lens 900 1200 1400 \
+      --o-filtered-seqs silva-138-ssu-nr99-seqs-filt.qza \
+      --o-discarded-seqs silva-138-ssu-nr99-seqs-discard.qza
+
+# Dereplicate database
+qiime rescript dereplicate \
+      --i-sequences silva-138-ssu-nr99-seqs-filt.qza  \
+      --i-taxa silva-138-ssu-nr99-tax.qza \
+      --p-mode 'uniq' \
+      --o-dereplicated-sequences silva-138-ssu-nr99-seqs-derep-uniq.qza \
+      --o-dereplicated-taxa silva-138-ssu-nr99-tax-derep-uniq.qza
+
+```
+
+
+
+
+
 
 #### Running Picrust2 from Qiime2
 
@@ -309,6 +366,8 @@ write.csv(df, "KEGG_DA.csv")
 
 ```
 
+> We are using LinDA methods to determine differential analysis which is one of the most recent methods: Zhou H, He K, Chen J, Zhang X. LinDA: linear models for differential abundance analysis of microbiome compositional data. Genome Biol. 2022;23: 95.
+
 - KO DA results:
 
 | feature | method | group1 | group2 | p_values | adj_method | p_adjust | pathway_name                                            | pathway_description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | pathway_class                                                    | pathway_map                                             |
@@ -376,65 +435,3 @@ __Pathways DA plots (soil type: bulk soil or rhizosphere)__
 
 __Pathways DA plots (soil origirin: agriculture or forestal)__
 ![metacyc_DA_type](./images/metacyc_DA_soil.png)
-
-
-
-* * *
-
-> A partir de aquí no lo necesito, estaría bien tenerlo para comparar los PCA con taxonomía / filogenia y con pathaways/kos, pero a partir de instalar rescript para bajar y filtrar la base de datos se va todo al carajo y qiime deja de funcionar
-
-### Phylogenetic distances determination using MAFFT and FastTree
-
-```bash
-qiime phylogeny align-to-tree-mafft-fasttree \
-                --i-sequences rep-seqs_filt.qza \
-                --o-alignment aligned-rep-seqs.qza \
-                --o-masked-alignment masked-aligned-rep-seqs.qza \
-                --o-tree unrooted-tree.qza \
-                --o-rooted-tree rooted-tree.qza
-```
-
-### Taxonomic assignment
-
-#### Silva database
-
-We are going to use RESCRIPt to download and curate database:
-
-```bash
-conda install -c conda-forge -c bioconda -c qiime2 -c defaults xmltodict
-pip install git+https://github.com/bokulich-lab/RESCRIPt.git
-```
-
-```bash
-# Download database
-qiime rescript get-silva-data \
-      --p-version '138' \
-      --p-target 'SSURef_NR99' \
-      --p-include-species-labels \
-      --o-silva-sequences silva-138-ssu-nr99-seqs.qza \
-      --o-silva-taxonomy silva-138-ssu-nr99-tax.qza
-
-# Remove sequences with ambiguous bases
-qiime rescript cull-seqs \
-      --i-sequences silva-138-ssu-nr99-seqs.qza \
-      --o-clean-sequences silva-138-ssu-nr99-seqs-cleaned.qza
-
-# Remove bad sequences (not length math)
-qiime rescript filter-seqs-length-by-taxon \
-      --i-sequences silva-138-ssu-nr99-seqs-cleaned.qza \
-      --i-taxonomy silva-138-ssu-nr99-tax.qza \
-      --p-labels Archaea Bacteria Eukaryota \
-      --p-min-lens 900 1200 1400 \
-      --o-filtered-seqs silva-138-ssu-nr99-seqs-filt.qza \
-      --o-discarded-seqs silva-138-ssu-nr99-seqs-discard.qza
-
-# Dereplicate database
-qiime rescript dereplicate \
-      --i-sequences silva-138-ssu-nr99-seqs-filt.qza  \
-      --i-taxa silva-138-ssu-nr99-tax.qza \
-      --p-rank-handles 'silva' \
-      --p-mode 'uniq' \
-      --o-dereplicated-sequences silva-138-ssu-nr99-seqs-derep-uniq.qza \
-      --o-dereplicated-taxa silva-138-ssu-nr99-tax-derep-uniq.qza
-
-```
