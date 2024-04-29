@@ -10,6 +10,8 @@ This page will walk you through the basic steps of using PICRUSt to make functio
 
 It uses an OTU table that has already been generated for use with PICRUSt (using QIIME2 and the closed-reference OTU picking protocolo, and [Greengenes](https://greengenes.secondgenome.com/) database). The data we are going to use in this tutorial comes from the stool of three groups of mice that are of different ages (young, middle, and old).
 
+> Picrust2 metagenome prediction limitationes: https://github.com/picrust/picrust2/wiki/Key-Limitations
+
 ## 1. Preparing data
 
 ### 1.1. Create a new directory that will store all of the files created in this tutorial:
