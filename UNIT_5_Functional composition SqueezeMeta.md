@@ -302,4 +302,4 @@ exportPathway(
         output_suffix = "pathview"
 )
 ```
-![pathway](../images/ko00270.pathview.png)
+![pathway](./images/ko00270.pathview.png)
