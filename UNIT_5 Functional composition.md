@@ -338,3 +338,14 @@ ggplot(aes(y = ContributionPercentOfAllSamples, x = Gene, fill = Phylum), data =
 ![imagen](./images/picrust_contribution.png)
 
 We can explore at different taxonomic level (Order, Family, Genus, etc.)
+
+
+```{R}
+map <- read.table(file = 'map.tsv', sep = '\t', header = TRUE, comment.char = "")
+df$disease <- map$Disease_state[match(df$Sample,map$X.SampleID)]
+df$age <- map$Age_Group[match(df$Sample,map$X.SampleID)]
+
+ggplot(aes(y = GeneCountPerGenome, x = Gene, fill = Phylum), data = df)  + geom_bar( stat="identity") + facet_wrap(~disease)
+```
+![imagen](./images/picrust_contribution_disease.png)
+
