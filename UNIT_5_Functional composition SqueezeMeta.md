@@ -225,7 +225,8 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("SQMtools")
 ```
 
-- SQM tools diagram:
+- SQM tools diagram:  
+
 ![SQM_pipeline](./images/sqm.png)
 
 Create the required files to load SqueezeMeta (>v1.6.5) results into SQM tools:
