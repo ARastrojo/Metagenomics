@@ -21,14 +21,14 @@ conda deactivate
 Krona installed.  You still need to manually update the taxonomy
 databases before Krona can generate taxonomic reports.  The update
 script is ktUpdateTaxonomy.sh.  The default location for storing
-taxonomic databases is /home/meg1/miniconda3/envs/squeezemeta/opt/krona/taxonomy
+taxonomic databases is /home/metag/miniconda3/envs/squeezemeta/opt/krona/taxonomy
 
 If you would like the taxonomic data stored elsewhere, simply replace
 this directory with a symlink.  For example:
 
-rm -rf /home/meg1/miniconda3/envs/squeezemeta/opt/krona/taxonomy
+rm -rf /home/metag/miniconda3/envs/squeezemeta/opt/krona/taxonomy
 mkdir /path/on/big/disk/taxonomy
-ln -s /path/on/big/disk/taxonomy /home/meg1/miniconda3/envs/squeezemeta/opt/krona/taxonomy
+ln -s /path/on/big/disk/taxonomy /home/metag/miniconda3/envs/squeezemeta/opt/krona/taxonomy
 ktUpdateTaxonomy.sh
 ```
 
@@ -146,7 +146,7 @@ ln -s /home/proyectos/microbioma/rastrojo/miniconda3/envs/SqueezeMeta/bin/minima
 conda update kmer-db
 
 ./kmer-db
-Illegal instruction (`core' generado)
+Illegal instruction ('core' generado)
 
 # I have also tried to compile but there is a problem with the architecture of my server microprocessor that do not allow me to used kmer-db (something related with the Advanced Vector Extensions 2 (AVX2)).
 ```
@@ -169,10 +169,10 @@ Para cada muestra he realizado el siguiente procedimiento:
 ```bash
 # QF
 trimmomatic.jar PE -phred33 -threads 12 GB_1_R1.fastq.gz GB_1_R2.fastq.gz \
-	GB_1_R1_qf.fastq.gz GB_1_R1_qf_unpaired.fastq.gz \
-	GB_1_R2_qf.fastq.gz GB_1_R2_qf_unpaired.fastq.gz \
-	ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
-	LEADING:30 TRAILING:30 MINLEN:75 AVGQUAL:30
+        GB_1_R1_qf.fastq.gz GB_1_R1_qf_unpaired.fastq.gz \
+        GB_1_R2_qf.fastq.gz GB_1_R2_qf_unpaired.fastq.gz \
+        ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
+        LEADING:30 TRAILING:30 MINLEN:75 AVGQUAL:30
 
 # Subsampling
 seqtk sample -s 123 GB_1_R1_qf.fastq.gz 13000000 > GB_1_R1_qf.fq
@@ -214,6 +214,9 @@ SqueezeMeta.pl -p diet -m coassembly -s samples_file.tsv -f raw_reads -c 500 -t 
 #### SQMtools (for SqueezeMeta results visualization)
 
 [Manual](https://github.com/jtamames/SqueezeMeta/blob/master/SQMtools_1.6.3.pdf)
+
+[A more detailed Manual](./sqmtools_manual.pdf)
+
 > Puente-Sánchez F, García-García N, Tamames J. SQMtools: automated processing and visual analysis of “omics data with R and anvi”o. BMC Bioinformatics. 2020;21: 358.
 
 ``` R
@@ -243,22 +246,22 @@ summary(diet)
 Taxonomy plot:
 ```R
 plotTaxonomy(
-	diet,
-	rank = "phylum",
-	count = "percent",
-	N = 15,
-	tax = NULL,
-	others = TRUE,
-	samples = NULL,
-	nocds = "treat_separately",
-	ignore_unmapped = FALSE,
-	ignore_unclassified = FALSE,
-	no_partial_classifications = FALSE,
-	rescale = FALSE,
-	color = NULL,
-	base_size = 11,
-	max_scale_value = NULL,
-	metadata_groups = NULL
+        diet,
+        rank = "phylum",
+        count = "percent",
+        N = 15,
+        tax = NULL,
+        others = TRUE,
+        samples = NULL,
+        nocds = "treat_separately",
+        ignore_unmapped = FALSE,
+        ignore_unclassified = FALSE,
+        no_partial_classifications = FALSE,
+        rescale = FALSE,
+        color = NULL,
+        base_size = 11,
+        max_scale_value = NULL,
+        metadata_groups = NULL
 )
 ```
 ![Taxo](./images/sqm_taxo.png)
@@ -266,17 +269,17 @@ plotTaxonomy(
 Taxonomy functions:
 ```R
 plotFunctions(
-	diet,
-	fun_level = "KEGG",
-	count = "tpm",
-	N = 25,
-	fun = NULL,
-	samples = NULL,
-	ignore_unmapped = TRUE,
-	ignore_unclassified = TRUE,
-	gradient_col = c("ghostwhite", "dodgerblue4"),
-	base_size = 11,
-	metadata_groups = NULL
+        diet,
+        fun_level = "KEGG",
+        count = "tpm",
+        N = 25,
+        fun = NULL,
+        samples = NULL,
+        ignore_unmapped = TRUE,
+        ignore_unclassified = TRUE,
+        gradient_col = c("ghostwhite", "dodgerblue4"),
+        base_size = 11,
+        metadata_groups = NULL
 )
 ```
 ![Functions](./images/sqm_functions.png)
@@ -285,18 +288,18 @@ Pathways visualizarion:
 ```R
 # K00558 --> pathway 00270
 exportPathway(
-	diet,
-	"00270",
-	count = "tpm",
-	samples = NULL,
-	split_samples = FALSE,
-	sample_colors = NULL,
-	log_scale = FALSE,
-	fold_change_groups = list(c("GB_1", "GB_2", "GB_3", "GB_4", "GB_5"), c("PIB_1", "PIB_2", "PIB_3", "PIB_4", "PIB_5")),
-	fold_change_colors = c("red", "blue"),
-	max_scale_value = NULL,
-	color_bins = 10,
-	output_suffix = "pathview"
+        diet,
+        "00270",
+        count = "tpm",
+        samples = NULL,
+        split_samples = FALSE,
+        sample_colors = NULL,
+        log_scale = FALSE,
+        fold_change_groups = list(c("GB_1", "GB_2", "GB_3", "GB_4", "GB_5"), c("PIB_1", "PIB_2", "PIB_3", "PIB_4", "PIB_5")),
+        fold_change_colors = c("red", "blue"),
+        max_scale_value = NULL,
+        color_bins = 10,
+        output_suffix = "pathview"
 )
 ```
 ![pathway](../images/ko00270.pathview.png)
