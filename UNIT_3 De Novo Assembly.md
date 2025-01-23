@@ -38,7 +38,7 @@ To learn the basis of *de novo* assembly we will use a small dataset to reduce c
 
 Download ECTV reads:
 ```bash
-cd /home/metag/Documents/
+cd /home/${USER}/Documents/
 mkdir unit_3
 cd unit_3
 gdown https://drive.google.com/uc?id=1gtnWLZWdZxn6j-oDvro2sDw3YHPZI2LM
