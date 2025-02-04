@@ -189,9 +189,10 @@ Now, on the new machine (target) we only need to decompress the packed file:
 
 ```bash
 pip install gdown # to download files from googledrive
-gdown https://drive.google.com/uc?id=1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
-mkdir /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust
-tar -xzf picrust.tar.gz -C /media/DiscoLocal/BioInformatica/miniconda3/envs/picrust
+gdown 1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
+# md5 (stamp.tar.gz) = 3160a72c735bf6fe6a391ce5b749bba1
+mkdir /home/metag/miniconda3/envs/stamp
+tar -xzf stamp.tar.gz -C /home/metag/miniconda3/envs/stamp
 ```
 
 > IMPORTANT: we can only port environments between same operating system (for linux to linux, from mac to mac, etc.)
