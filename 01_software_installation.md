@@ -145,6 +145,15 @@ conda deactivate
 # Database file is located in $HOME/miniconda3/envs/picrust/lib/python2.7/site-packages/picrust/data
 ```
 
+If standard installation fails, you can try to install picrust by using _conda pack_:
+```bash
+# Download pre-installed picrust enviroment 
+gdown 1CTpbRgrSWT40dlajjM6HU-524dQow0SJ
+# md5 (picrust.tar.gz) = bb1f8a85d1057927bc09fea92ce02ff7
+mkdir /home/${USER}/miniconda3/envs/picrust
+tar -xzf picrust.tar.gz -C /home/${USER}/miniconda3/envs/picrust
+```
+
 <!--### Picrust2
 
 ```bash
