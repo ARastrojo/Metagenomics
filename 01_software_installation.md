@@ -157,7 +157,7 @@ mamba create -n picrust2 -c bioconda -c conda-forge picrust2=2.5.2
 This program is out of date and cannot be installed using _conda_ because uses python v2.7 which is no longer maintained. Although some python v2.7 can be used, in this case STAMP requires a library (pyQt4) which is not avaible. But we can _clone_  the  _conda environment_ created when all libraries were availble by using _conda-pack_ (see Tips before starting for more details). 
 
 ```bash
-gdown https://drive.google.com/uc?id=1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
+gdown 1ANLUfRcoudLWH40CFUomd0Ma50h4mAAn
 # md5 (stamp.tar.gz) = 3160a72c735bf6fe6a391ce5b749bba1
 mkdir /home/metag/miniconda3/envs/stamp
 tar -xzf stamp.tar.gz -C /home/metag/miniconda3/envs/stamp
