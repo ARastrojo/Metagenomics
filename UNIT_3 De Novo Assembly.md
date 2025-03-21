@@ -296,7 +296,7 @@ source /home/metag/.bashrc
 ```
 
 
-Another options that also works is to create a new conda environment without indicating any python version to allow conda to install the most convinient:
+Another options that also works is to create a new conda environment without indicating any python version to allow conda to install the most convenient:
 ```bash
 conda create -n bowtie2 -c bioconda bowtie2 -y
 ````
