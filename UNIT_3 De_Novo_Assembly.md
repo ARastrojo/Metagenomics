@@ -1,5 +1,7 @@
 # _De Novo_ Assembly tutorial
 
+[Introduction presentation](https://docs.google.com/presentation/d/1n6DpzoNQbPP01gbJ0mKnNw-A2Nse6IGVRUZ6tvemjrY/edit?usp=sharing)
+
 **Conda environments**
 
 Before starting to work with the data we are going to create a new _conda environment_ where we are going to install the necessary programs. Conda environments are virtual spaces where we can install whatever we need for a project without modifying the base installation. This is very usefull when some of the programs we want to use require different libraries versions that cannot be install at the same time. Additionally, if something goes wrong, we can remove the environment an start over. To create a conda environment we use the following command:
