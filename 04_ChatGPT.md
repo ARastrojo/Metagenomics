@@ -1,3 +1,6 @@
+[Conversación original](https://chatgpt.com/share/6706b19c-4dd0-8001-bc4d-6b182b9d19e9)
+
+
 ## \*\*\*Cuantos conjuntos de 6 elementos necesito para que estén representados en ellos todas las parejas posibles de 12 elementos
 
 El problema se puede abordar como un problema de combinatoria y diseño de bloques. Se requiere determinar cuántos conjuntos de 6 elementos (llamados "bloques") se necesitan para cubrir todas las parejas posibles de 12 elementos.
