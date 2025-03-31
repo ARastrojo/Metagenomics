@@ -1,5 +1,7 @@
 # Taxonomy classification 
 
+[Slides](https://docs.google.com/presentation/d/1lDxIJjAagD2R3j_88y1ySXuSwPU7sZjla3EM7tm1GgI/edit?usp=sharing)
+
 ## 1. Pre-processing
 
 - Create a folder and obtain reads:
