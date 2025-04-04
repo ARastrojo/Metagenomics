@@ -378,4 +378,4 @@ Follow the workflow of this tutorial for the taxonomic binning and comparison of
 
 Write a brief summary describing the bioinformatic pipeline you have followed (trimming, decontamination, improve in quality, number of reads remove in each step, etc.) and the most relevant results with the taxonomy assessment of the viromes and their comparison (use family level). Note that across with simulated virome files there is a file containing the viral genomes used for the simulation, their relative abundance and their taxonomy, therefore, the quality of the taxonomy binning can be assessed, at least qualitatively.
 
-Deadline: XXth May.
+Deadline: 15th of May.
