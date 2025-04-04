@@ -667,4 +667,4 @@ Write a brief summary describing the bioinformatic pipeline you have followed (t
 
 > NOTE: In the quality filtering step, modify the MINLEN argument considering the original read length. Consider that reads with a minimum of 50% of the average original size are ok for subsequent analyses.
 
-Submit this document as a task to Moodle/Unit3 before XXth of XX.
+Submit this document as a task to Moodle/Unit3 before 15th of May.
