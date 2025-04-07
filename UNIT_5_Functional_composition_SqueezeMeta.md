@@ -1,3 +1,5 @@
+[Slides](https://docs.google.com/presentation/d/1gan6X4yMm9En5YhCGH9_F-TpIr9szHXMSoQ2P5IAm9g/edit?usp=sharing)
+
 ## SqueezeMeta
 
 SqueezeMeta is a pipeline (workflow) for the analysis of shotgun metagenomics focus on bacteria ([Manual](https://github.com/jtamames/SqueezeMeta)). It performs all the required steps: quality filtering, assembly, taxonomic classification, contig binning, gene prediction and annotation, functional classifications, etc. For each step SqueezeMeta offers several options. For instance, in the assembly step you can use SPAdes or Megahit, or in the quality filtering it is possible to use Trimmomatic or Prinseq. 
