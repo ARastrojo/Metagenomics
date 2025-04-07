@@ -149,6 +149,7 @@ conda update kmer-db
 Illegal instruction ('core' generado)
 
 # I have also tried to compile but there is a problem with the architecture of my server microprocessor that do not allow me to used kmer-db (something related with the Advanced Vector Extensions 2 (AVX2)).
+# Advanced Vector Extensions 2 (AVX2) is an instruction set expansion for Intel processors that enables 256-bit integer and floating-point operations.
 ```
 
 ## Data
