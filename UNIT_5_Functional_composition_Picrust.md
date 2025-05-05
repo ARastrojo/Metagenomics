@@ -27,7 +27,7 @@ cd unit_5
 ### 1.2. Download dataset and unzip:
 
 ```bash
-gdown https://drive.google.com/uc?id=1oq3D23KBaJ5UhVh--eVL6fa50oIpGl0m
+gdown 1oq3D23KBaJ5UhVh--eVL6fa50oIpGl0m
 unzip picrust_example.zip
 
 # MD5 (picrust_example.zip): a54f27f58d71091470d4c093af8f3e00 
