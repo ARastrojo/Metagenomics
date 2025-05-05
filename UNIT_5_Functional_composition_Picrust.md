@@ -27,6 +27,7 @@ cd unit_5
 ### 1.2. Download dataset and unzip:
 
 ```bash
+# You may need to activate 2 "ngs" environment to use gdown
 gdown 1oq3D23KBaJ5UhVh--eVL6fa50oIpGl0m
 unzip picrust_example.zip
 
