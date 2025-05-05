@@ -1,5 +1,8 @@
 # PICRUSt: Functional composition inference from metabarcoding data (Marker genes)
 
+[Slides](https://docs.google.com/presentation/d/1RTSX7_yRD_1nTkeOD4poirDLjDDTJMxrn8hNccvu96I/edit?usp=sharing)
+
+
 > Original paper: _Langille, M. G. I., Zaneveld, J., Caporaso, J. G., McDonald, D., Knights, D., Reyes, J. A., Clemente, J. C., Burkepile, D. E., Vega Thurber, R. L., Knight, R., Beiko, R. G., & Huttenhower, C. (2013). Predictive functional profiling of microbial communities using 16S rRNA marker gene sequences. Nature Biotechnology, 31(9), 814–821._
 
 > This tutorial is based on [Morgan  Langille Lab's manual](https://github.com/LangilleLab/microbiome_helper/wiki/CBW-2016-PICRUSt-tutorial)
