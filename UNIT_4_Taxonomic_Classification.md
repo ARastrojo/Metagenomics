@@ -203,7 +203,7 @@ Once you have the graphical overview of the taxomomic composition of the reads f
 4. We can copy data by clicking on Options/List Summary, paste de data in LibreOffice or Excel using “:” to divide data in columns.
 5. Check the alignments from a specific taxon by clicking on that with the right
 mouse button. Select “Inspect” option.
-6. We can change LCA parameters in Options and increase the minimal score to 60 and reduce the max e-value allow to 10<sup>-10</sup> and the min complexity to 0.5 in order to reduce false positive alignments.
+6. We can optionally change LCA parameters in Options and increase the minimal score to 60 and/or reduce the max e-value allow to 10<sup>-10</sup> in order to reduce false positive alignments.
 
 > MEGAN results are stored in a file called *virome_1_10k.rma6* created in the same folder than input files.
 
