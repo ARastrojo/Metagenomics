@@ -25,12 +25,14 @@ Abrimos un terminal y pegamos el siguiente comando:
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-
+<!--
 - [Xfreerdp](https://formulae.brew.sh/formula/freerdp): implementación del protocolo de escritorio remoto a través de X11. 
 
 ```bash
 brew install freerdp
 ```
+-->
+
 - [Xquartz](https://www.xquartz.org/): gestor de ventanas X11. 
 
 ```bash
