@@ -35,7 +35,7 @@ Antes de manejar la imagen de la asignatura, debes tener instalado Docker en tu 
 Una vez instalado Docker, abre una terminal y descarga la imagen oficial:
 
 ```
-docker pull --name bioinfo smigredon/bioinformatica-master
+docker pull migredon/bioinformatica-master
 ```
 
 ### 3. Configuración del Servidor Gráfico (X11)
