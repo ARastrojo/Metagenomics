@@ -1,3 +1,5 @@
+<!--
+
 ---
 aliases:
   - "# 🧬 Docker Environment for Metagenomics / Entorno Docker para Metagenómica"
@@ -5,6 +7,8 @@ aliases:
 
 
 **Image / Imagen:** `migredon/bioinformatica-master`
+-->
+
 
 Este documento detalla la configuración necesaria para desplegar el entorno de la asignatura, permitiendo el uso de herramientas gráficas (STAMP) y el entorno de desarrollo RStudio Server.
 
